@@ -4,7 +4,7 @@ Page Title
 {% endblock %}
 {% block content %}
 <div class="flex w-full flex-col">
-    
+{% if request.user.is_authenticated %}    
 <form class="w-full " method="POST" action="{% url 'posts:add_post' %}">
     {%csrf_token%}
 
@@ -40,10 +40,21 @@ Page Title
         </div>
     </div>
  </form>
+
+ {% endif %}
+
  
-<div class="flex flex-col">
+<div class="flex flex-col gap-4">
         {% for post in posts %}
-        <div class="card"> {{post.content}}</div>
+        
+        <div class="card border-b-2 border-gray-700 p-5 flex gap-5 flex-col "> 
+            <div class="flex gap-3">    <img class="h-12 w-12 rounded-full object-cover" src="{{ post.user.profile.profile_image.url }}" alt="{{ post.user.username }}'s profile image">
+        <h4>{{post.user.username}}</h4>
+            </div>
+            <div>
+            <p class="{{ post.text_direction }}">{{post.content}}</p>
+        </div>
+        </div>
 
         {%endfor%}
 
