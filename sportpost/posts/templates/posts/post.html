@@ -1,0 +1,38 @@
+<div class="flex justify-between">
+    <div class="flex gap-3">
+        <img class="h-12 w-12 rounded-full object-cover" src="{{ post.user.profile.profile_image.url }}"
+            alt="{{ post.user.username }}'s profile image" />
+        <h4>{{post.user.username}}</h4>
+    </div>
+    <button class="group relative">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+        </svg>
+        <div
+            class="absolute top-full right-0 rounded-lg p-3 mt-1 shadow-md scale-y-0 group-focus:scale-100 origin-top duration-200">
+            {% if request.user == post.user %}
+            <a hx-post="{% url 'posts:delete_post' post.id %}" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                hx-target="#tweet-{{ post.id }}" hx-swap="outerHTML">
+                delete
+            </a>
+            {%endif%}
+            <a href="">qwdwq</a>
+        </div>
+    </button>
+</div>
+<div class="w-full">
+    {% if not detail_view %}
+      <a href="{% url 'posts:detail_post_view' post.id %}">
+        <p class="{{ post.text_direction }} w-full whitespace-normal break-words">
+          {{ post.content }}
+        </p>
+      </a>
+    {% else %}
+      <p class=" {{ post.text_direction }} w-full whitespace-normal break-words">
+        {{ post.content }}
+      </p>
+    {% endif %}
+  </div>
+  

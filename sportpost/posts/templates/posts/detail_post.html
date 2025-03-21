@@ -1,0 +1,16 @@
+{% extends 'posts/base.html' %}
+{% block title %}
+Page Title
+{% endblock %}
+{% block content %}
+<div class="flex flex-col gap-4 w-full">
+
+    <div id="tweet-{{ post.id }}" class="card border-2 border-gray-700 p-5 flex gap-5 flex-col ">
+      {%include 'posts/post.html'%}
+    </div>
+
+
+</div>
+
+
+{% endblock %}

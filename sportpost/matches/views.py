@@ -1,8 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .models import Match
+from django.utils import timezone
+import datetime
+
 
 # Create your views here.
 def live_score_view(request):
-    matches=Match.objects.all().order_by("-time")
-    print(matches)
+    today = datetime.datetime.now().strftime ("%Y-%m-%d")
+
+    
+    matches=Match.objects.all().filter(date=today).order_by("-time")
     return render(request,"matches/live_score.html",{"matches":matches})
+
