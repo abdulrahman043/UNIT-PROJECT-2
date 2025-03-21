@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "posts",
     "accounts",
     'matches',
+    "django_apscheduler",
 
 
 ]
