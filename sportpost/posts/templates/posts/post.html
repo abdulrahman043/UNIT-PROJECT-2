@@ -2,7 +2,8 @@
     <div class="flex gap-3">
         <img class="h-12 w-12 rounded-full object-cover" src="{{ post.user.profile.profile_image.url }}"
             alt="{{ post.user.username }}'s profile image" />
-        <h4>{{post.user.username}}</h4>
+        <h4>{{post.user.profile.name}}</h4>
+        <h4>@{{post.user.username}}</h4>
     </div>
     <button class="group relative">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -25,13 +26,13 @@
 <div class="w-full">
     {% if not detail_view %}
       <a href="{% url 'posts:detail_post_view' post.id %}">
-        <p class="{{ post.text_direction }} w-full whitespace-normal break-words">
+        <p {% if post.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words" {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>
           {{ post.content }}
         </p>
       </a>
     {% else %}
-      <p class=" {{ post.text_direction }} w-full whitespace-normal break-words">
-        {{ post.content }}
+    <p {% if post.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words" {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>
+      {{ post.content }}
       </p>
     {% endif %}
   </div>

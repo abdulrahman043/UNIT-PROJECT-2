@@ -11,3 +11,6 @@ class Profile(models.Model):
     null=True
     )
     bio = models.TextField(blank=True)
+    created_at=models.DateTimeField(auto_now_add=True)
+    name=models.CharField(max_length=30)
+

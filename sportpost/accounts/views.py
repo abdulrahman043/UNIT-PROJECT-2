@@ -9,10 +9,11 @@ from django.http import HttpRequest
 def create_account_view(request:HttpRequest):
     if request.method=="POST":
         try:
+            print(request.POST)
             user = User.objects.create_user(username=request.POST["username"], email=request.POST["email"], password=request.POST["password"])
             user.save()
-            Profile.objects.create(user=user)
-
+            Profile.objects.create(user=user,name=request.POST["name"])
+            
             return redirect("accounts:login_account_view")
 
         except Exception as e:
@@ -34,3 +35,5 @@ def login_account_view(request:HttpRequest):
 def logout_account(request:HttpRequest):
     logout(request)
     return redirect('posts:home_view')
+def profile_view(requset,username):
+    return render(requset,"accounts/profile.html")
