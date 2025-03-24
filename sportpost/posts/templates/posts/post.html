@@ -1,9 +1,17 @@
 <div class="flex justify-between">
     <div class="flex gap-3">
+      {% if not profile_view %}
+        <a href="{%url 'accounts:profile_view' post.user.username %}"><img class="h-12 w-12 rounded-full object-cover" src="{{ post.user.profile.profile_image.url }}"
+          
+            alt="{{ post.user.username }}'s profile image" /></a>
+            <a href="{%url 'accounts:profile_view' post.user.username %}"><h4>{{post.user.profile.name}}</h4></a>
+              <a href="{%url 'accounts:profile_view' post.user.username %}"> <h4>@{{post.user.username}}</h4></a>
+        {% else %}
         <img class="h-12 w-12 rounded-full object-cover" src="{{ post.user.profile.profile_image.url }}"
-            alt="{{ post.user.username }}'s profile image" />
-        <h4>{{post.user.profile.name}}</h4>
-        <h4>@{{post.user.username}}</h4>
+          
+          alt="{{ post.user.username }}'s profile image" />
+          <h4>{{post.user.profile.name}}</h4>
+           <h4>@{{post.user.username}}</h4>       {% endif %}
     </div>
     <button class="group relative">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"

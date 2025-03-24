@@ -2,9 +2,11 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from .models import Profile
-
+from matches.models import Match
 from django.http import HttpRequest
-
+from django.utils import timezone
+import datetime
+from posts.models import Post
 # Create your views here.
 def create_account_view(request:HttpRequest):
     if request.method=="POST":
@@ -35,5 +37,10 @@ def login_account_view(request:HttpRequest):
 def logout_account(request:HttpRequest):
     logout(request)
     return redirect('posts:home_view')
-def profile_view(requset,username):
-    return render(requset,"accounts/profile.html")
+def profile_view(request:HttpRequest,username):
+    today = datetime.datetime.now().strftime ("%Y-%m-%d")
+    user=User.objects.get(username=username)
+    
+    posts=Post.objects.filter(user=user)
+    matches=Match.objects.all().filter(date=today).order_by("-time")
+    return render(request,"accounts/profile.html",{"posts":posts,"matches":matches,"profile_view":True})

@@ -13,4 +13,18 @@ class Profile(models.Model):
     bio = models.TextField(blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
     name=models.CharField(max_length=30)
+    @property
+    def text_direction(self):
+        """
+        Returns 'text-right' if the first non-whitespace character
+        is an Arabic character, otherwise 'text-left'.
+        """
+        if self.bio:
+            stripped = self.bio.strip()
+            if stripped:
+                first_char = stripped[0]
+                # Arabic Unicode block range: 0600 to 06FF
+                if '\u0600' <= first_char <= '\u06FF':
+                    return "text-right"
+        return "text-left"
 
