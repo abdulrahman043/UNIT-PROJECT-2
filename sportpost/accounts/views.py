@@ -38,9 +38,11 @@ def logout_account(request:HttpRequest):
     logout(request)
     return redirect('posts:home_view')
 def profile_view(request:HttpRequest,username):
-    today = datetime.datetime.now().strftime ("%Y-%m-%d")
+    now = datetime.datetime.now()
+    today = now.strftime("%Y-%m-%d")
+    yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+    matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time") 
     user=User.objects.get(username=username)
     
     posts=Post.objects.filter(user=user)
-    matches=Match.objects.all().filter(date=today).order_by("-time")
     return render(request,"accounts/profile.html",{"posts":posts,"matches":matches,"profile_view":True})

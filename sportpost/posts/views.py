@@ -41,7 +41,6 @@ def delete_post(request:HttpRequest,id:int):
         return HttpResponse("Method not allowed", status=405)
 def detail_post_view(request,id):
     post=Post.objects.get(pk=id)
-    print(post)
     now = datetime.datetime.now()
     today = now.strftime("%Y-%m-%d")
     yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")

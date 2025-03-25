@@ -2,20 +2,17 @@
     <h3 class="text-2xl font-bold text-gray-100">Live Scores</h3>
     {% for match in matches %}
     <div class="card bg-gray-800 rounded-lg shadow p-4  justify-between items-center flex gap-5">
-      <!-- Home team section -->
       <div class="flex items-center gap-2">
         <img class="h-5 w-5 rounded-full object-cover" src="{{ match.home_team.logo.url }}" alt="{{ match.home_team.name }} logo">
         <span class="text-lg font-semibold text-white">{{ match.home_team.name }}</span>
         <span class="text-xl font-bold text-green-400">{{ match.home_score }}</span>
       </div>
-      <!-- Away team section -->
       <div class="flex items-center gap-2`">
         <span class="text-xl font-bold text-red-400">{{ match.away_score }}</span>
         <span class="text-lg font-semibold text-white">{{ match.away_team.name }}</span>
         <img class="h-5 w-5 rounded-full object-cover" src="{{ match.away_team.logo.url }}" alt="{{ match.away_team.name }} logo">
       </div>
     </div>
-    <p>{{ match.game_clock}}</p>
     {% endfor %}
   </div>
   
