@@ -29,6 +29,10 @@ def my_job():
       team_id_away=game.get("awayTeam").get("teamId")
       home_team_name=game.get("homeTeam").get("teamName")
       away_team_name=game.get("awayTeam").get("teamName")
+      if home_team_name=="Timberwolves":
+        home_team_name="Wolves"
+      if away_team_name=="Timberwolves":
+        away_team_name="Wolves"
       home_team_logo=f"images/team_logo/{home_team_name}.svg"
       away_team_logo=f"images/team_logo/{away_team_name}.svg"
 

@@ -6,9 +6,9 @@ import datetime
 
 # Create your views here.
 def live_score_view(request):
-    today = datetime.datetime.now().strftime ("%Y-%m-%d")
-
+    now = datetime.datetime.now()
+    today = now.strftime("%Y-%m-%d")
+    yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+    matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time")
     
-    matches=Match.objects.all().filter(date=today).order_by("-time")
-    return render(request,"matches/live_score.html",{"matches":matches})
-
+    return render(request, "matches/live_score.html", {"matches": matches})

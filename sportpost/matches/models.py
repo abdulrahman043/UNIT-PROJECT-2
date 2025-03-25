@@ -12,6 +12,8 @@ class Team(models.Model):
     blank=True,
     null=True
     )
+    def __str__(self):
+        return f"{self.name}"
 class Match(models.Model):
     game_id = models.CharField(max_length=100, unique=True, blank=True, null=True)
     home_team = models.ForeignKey(Team,on_delete=models.CASCADE,related_name='home_matches')

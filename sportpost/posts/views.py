@@ -11,9 +11,10 @@ import datetime
 
 # Create your views here.
 def home_view(request:HttpRequest):
-    today = datetime.datetime.now().strftime ("%Y-%m-%d")
-
-    matches=Match.objects.all().filter(date=today).order_by("-time")
+    now = datetime.datetime.now()
+    today = now.strftime("%Y-%m-%d")
+    yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+    matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time")
     posts=Post.objects.all().order_by('-created_at')
     return render(request,"posts/home.html",{"posts":posts,"matches":matches})
 def add_post(request:HttpRequest):
@@ -39,13 +40,12 @@ def delete_post(request:HttpRequest,id:int):
     else:
         return HttpResponse("Method not allowed", status=405)
 def detail_post_view(request,id):
-    today = datetime.datetime.now().strftime ("%Y-%m-%d")
     post=Post.objects.get(pk=id)
     print(post)
-    
-
-
-    matches=Match.objects.all().filter(date=today).order_by("-time")
+    now = datetime.datetime.now()
+    today = now.strftime("%Y-%m-%d")
+    yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+    matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time") 
     return render(request,"posts/detail_post.html",{"post":post,"matches":matches,"detail_view": True})
 
 
