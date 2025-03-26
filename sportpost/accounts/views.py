@@ -43,9 +43,24 @@ def profile_view(request:HttpRequest,username):
     yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time") 
     user=User.objects.get(username=username)
+    profile=user.profile
     
     posts=Post.objects.filter(user=user)
-    return render(request,"accounts/profile.html",{"posts":posts,"matches":matches,"profile_view":True})
+    return render(request,"accounts/profile.html",{"posts":posts,"matches":matches,"profile_view":True,"profile":profile})
 def edit_profile_view(request:HttpRequest):
-  
     return render(request,"accounts/edit_profile.html")
+def update_profile(request:HttpRequest):
+    if request.method=="POST":
+        profile = request.user.profile
+        profile.name=request.POST["name"]
+        profile.bio=request.POST["bio"]
+        if "profile_image" in request.FILES:
+            profile.profile_image = request.FILES["profile_image"]
+        profile.save()
+
+        return redirect("accounts:profile_view", username=request.user.username)
+
+
+
+        
+
