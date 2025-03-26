@@ -9,7 +9,32 @@ Page Title
       {%include 'posts/post.html'%}
     </div>
 
+    <div>
+      <form class="bg-black flex" action="{% url 'posts:add_replay' post.id %}" method="post">
+        {%csrf_token%}
+        <img class="h-12 w-12 rounded-full object-cover" src="{{ request.user.profile.profile_image.url }}">
 
+        <input class="bg-black text-white" type="text" name="content" placeholder="post your replay" required>
+        <button>Post</button>
+      </form>
+    </div>
+
+  
+    <div class="flex flex-col gap-4 w-full">
+      {%for replie in replies %}
+
+      <div id="tweet-{{ replie.id }}" class="card border-b-2 border-gray-700 p-5 flex gap-5 flex-col ">
+        {%with post=replie%}
+        {%include 'posts/post.html'%}
+        {% endwith %}
+      </div>
+      {%empty%}
+      <div class="text-center text-3xl">
+      <h1>no post</h1>
+      </div>
+      {%endfor%}
+
+  </div>
 </div>
 
 

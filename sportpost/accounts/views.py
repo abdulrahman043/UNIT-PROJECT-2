@@ -46,3 +46,6 @@ def profile_view(request:HttpRequest,username):
     
     posts=Post.objects.filter(user=user)
     return render(request,"accounts/profile.html",{"posts":posts,"matches":matches,"profile_view":True})
+def edit_profile_view(request:HttpRequest):
+  
+    return render(request,"accounts/edit_profile.html")

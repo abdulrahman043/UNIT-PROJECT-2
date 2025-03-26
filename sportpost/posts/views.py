@@ -26,9 +26,16 @@ def add_post(request:HttpRequest):
             post = post_form.save(commit=False)
             post.user = request.user
             post.save()
-
-
             return redirect("posts:home_view")
+def add_replay(request:HttpRequest,id:int):
+    if not request.user.is_authenticated:
+        return redirect("accounts:create_account_view")
+    if request.method=="POST":
+        post=Post.objects.get(pk=id)
+        replay_post=Post.objects.create(user=request.user,content=request.POST["content"],parent_post=post)
+        return redirect("posts:detail_post_view", id=post.id)
+
+
 def delete_post(request:HttpRequest,id:int):
     if request.method=="POST":
         post=Post.objects.get(pk=id)
@@ -45,7 +52,9 @@ def detail_post_view(request,id):
     today = now.strftime("%Y-%m-%d")
     yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time") 
-    return render(request,"posts/detail_post.html",{"post":post,"matches":matches,"detail_view": True})
+    replies = post.replies.all()
+
+    return render(request,"posts/detail_post.html",{"post":post,"matches":matches,"detail_view": True,"replies":replies})
 
 
 
