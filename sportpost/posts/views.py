@@ -6,7 +6,9 @@ from django.contrib.auth.models import User
 from matches.models import Match
 from django.utils import timezone
 import datetime
+from accounts.models import Bookmark,Like
 
+from django.db.models import Exists, OuterRef
 
 
 # Create your views here.
@@ -16,6 +18,11 @@ def home_view(request:HttpRequest):
     yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time")
     posts=Post.objects.all().order_by('-created_at')
+    if request.user.is_authenticated:
+        posts=is_bookmarked(posts,request.user)
+        posts=is_liked(posts,request.user)
+        posts=is_reposted(posts,request.user)
+
     return render(request,"posts/home.html",{"posts":posts,"matches":matches})
 def add_post(request:HttpRequest):
     if not request.user.is_authenticated:
@@ -60,4 +67,40 @@ def detail_post_view(request,id):
 
         
 
-    
+def is_bookmarked(posts, user):
+    try:
+        if user.is_authenticated:
+            bookmark_subquery = Bookmark.objects.filter(
+                user=user,        # Filter bookmarks for the current user
+                post=OuterRef('pk')  # Compare each post's primary key with the bookmark's post
+            )
+            return posts.annotate(is_bookmarked=Exists(bookmark_subquery))
+        else:
+            return posts.annotate(is_bookmarked=False)
+    except Exception as e:
+        print(e)
+def is_liked(posts, user):
+    try:
+        if user.is_authenticated:
+            like_subquery = Like.objects.filter(
+                user=user,       
+                post=OuterRef('pk')  
+            )
+            return posts.annotate(is_liked=Exists(like_subquery))
+        else:
+            return posts.annotate(is_liked=False)
+    except Exception as e:
+        print(e)
+def is_reposted(posts, user):
+    try:
+        if user.is_authenticated:
+            repost_subquery = Post.objects.filter(
+                user=user,              # Check reposts by the current user
+                repost_of=OuterRef('pk')  # Compare against the original post's primary key
+            )
+            return posts.annotate(is_reposted=Exists(repost_subquery))
+        else:
+            return posts.annotate(is_reposted=False)
+    except Exception as e:
+        print(e)
+

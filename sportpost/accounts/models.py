@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from posts.models import Post
 # Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -10,6 +10,8 @@ class Profile(models.Model):
     blank=True,
     null=True
     )
+   
+
     bio = models.TextField(blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
     name=models.CharField(max_length=30)
@@ -27,4 +29,14 @@ class Profile(models.Model):
                 if '\u0600' <= first_char <= '\u06FF':
                     return "text-right"
         return "text-left"
+
+class Bookmark(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    post=models.ForeignKey(Post,on_delete=models.CASCADE,null=True,blank=True)
+    created_at=models.DateTimeField(auto_now_add=True)
+
+class Like(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    post=models.ForeignKey(Post,on_delete=models.CASCADE,null=True,blank=True)
+    created_at=models.DateTimeField(auto_now_add=True)
 
