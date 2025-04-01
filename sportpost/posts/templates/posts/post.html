@@ -34,7 +34,7 @@
         </div>
     </button>
 </div>
-<div class="w-full">
+<div class="w-full flex flex-col gap-10">
     {% if not detail_view %}
       <a href="{% url 'posts:detail_post_view' post.id %}">
         <p {% if post.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words" {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>
@@ -42,7 +42,7 @@
         </p>
       </a>
     {% else %}
-    <p {% if post.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words" {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>
+    <p  {% if post.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words " {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>
       {{ post.content }}
       </p>
     {% endif %}

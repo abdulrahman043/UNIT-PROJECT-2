@@ -16,6 +16,15 @@ def home_view(request:HttpRequest):
     now = datetime.datetime.now()
     today = now.strftime("%Y-%m-%d")
     yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        #"is_selected": (day == selected_date),  # Check if this day is the selected day
+        "day_name": day.strftime("%a")           # Abbreviated day name, e.g., "Mon", "Tue"
+    }
+        days_list.append(day_dict)
     matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time")
     posts=Post.objects.all().order_by('-created_at')
     if request.user.is_authenticated:
@@ -23,7 +32,7 @@ def home_view(request:HttpRequest):
         posts=is_liked(posts,request.user)
         posts=is_reposted(posts,request.user)
 
-    return render(request,"posts/home.html",{"posts":posts,"matches":matches})
+    return render(request,"posts/home.html",{"posts":posts,"matches":matches,"days_list":days_list})
 def add_post(request:HttpRequest):
     if not request.user.is_authenticated:
         return redirect("accounts:create_account_view")

@@ -9,7 +9,7 @@ import datetime
 from posts.models import Post
 from posts.views import is_liked,is_bookmarked
 from django.db import transaction, IntegrityError
-
+from posts.models import Post
 # Create your views here.
 def create_account_view(request:HttpRequest):
     if request.method=="POST":
@@ -125,10 +125,7 @@ def add_like(request:HttpRequest,post_id):
         return redirect('posts:home_view')
     return redirect('posts:home_view')
 
-from django.shortcuts import get_object_or_404, redirect
-from django.http import HttpResponse, HttpRequest
-from django.db import transaction, IntegrityError
-from posts.models import Post
+
 
 def add_repost(request: HttpRequest, post_id):
     if request.method == "POST":

@@ -33,6 +33,10 @@ def my_job():
         home_team_name="Wolves"
       if away_team_name=="Timberwolves":
         away_team_name="Wolves"
+      if home_team_name == "Trail Blazers":
+        home_team_name = "Blazers"
+      if away_team_name == "Trail Blazers":
+        away_team_name = "Blazers"
       home_team_logo=f"images/team_logo/{home_team_name}.svg"
       away_team_logo=f"images/team_logo/{away_team_name}.svg"
 
