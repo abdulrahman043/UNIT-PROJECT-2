@@ -4,93 +4,173 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
-  
-    <title>{% block title %} {%endblock%}</title>
-    {% tailwind_css %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/htmx.org@2.0.4"
+    integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+"
+    crossorigin="anonymous"></script>
+
+  <title>{% block title %} {%endblock%}</title>
+  {% tailwind_css %}
 
 </head>
-<body class="bg-black mx-10  ">
-  <div class="flex flex-col "> 
-    <p class="text-white">{{days_list}}</p>
-    <div hx-get="{%url 'matches:live_score_view' %}" hx-trigger="every 15s"    hx-swap="innerHTML">
 
-     
-        {% include 'matches/live_score.html' %}
-     
-    </div> 
-  </div>
-    <section class="grid grid-cols-12  bg-black text-white p-4 w-full  overflow-y-auto my-4  ">
-        <div class="col-span-2  text-left border-r border-gray-700">
-          <div class="flex flex-col gap-3 text-left">
-                <a class="flex gap-2 " href="{%url 'posts:home_view' %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                  </svg>
-                 <h2>Home </h2> </a>
-                 <a class="flex gap-2 " href="">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                      </svg>
-                      
-                     <h2>Explore </h2> </a>
-                     <a class="flex gap-2 " href="">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                          </svg>
-                         <h2>Notifications</h2> </a>
-                         <a class="flex gap-2 "  href="{%url 'accounts:bookmark_view' %}">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-                              </svg>
-                                                          
-                             <h2>Bookmarks </h2> </a>
-                             {% if request.user.is_authenticated%}
+<body class="bg-black mx-10  text-white">
 
-                             <a class="flex gap-2 "  href="{%url 'accounts:profile_view' request.user.username %}">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                                  </svg>
+  <div class="flex flex-col ">
 
-                                 <h2>Profile </h2> </a>
-                                 {% endif %}
-
-                                 <a class="flex gap-2 "  href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                      </svg>
-
-                                      
-                                     <h2>More </h2> </a>
-                                     {% if request.user.is_authenticated %}
-                                     <a href="{%url 'accounts:logout_account' %}">logout</a>
-                                     <p>{{requset.user.profile.profile_image}}</p>
-                                     {% else %}
-                                     <a href="{%url 'accounts:login_account_view' %}">Login</a>
-                                     <a href="{%url 'accounts:create_account_view' %}">Sign Up</a>
-
-
-                                     
-
-                                     {% endif %}
-         
-          </div>
-        </div>
-        
-        <div class="col-span-8 text-center border-r border-gray-700">
-            {% block content %}
-        {% endblock %}
-        </div>
-        <div class="col-span-2">
-         
-        
+    <div class="overflow-x-auto">
+      <div class="flex gap-10">
+        {%for day in days_list%}
+        <button hx-get="{% url 'matches:live_score_view' %}?match_date={{ day.date|date:'Y-m-d'}}" hx-target="#matches"
+          hx-swap="innerHTML">
+          <span class="text-white">{{day.date|date:"b"|upper}}</span>
+          <span class="text-white">{{day.date|date:"D"}}</span>
+          <span class="text-white">{{day.date|date:"d"}}</span>
+        </button>
+        {%endfor%}
       </div>
-      </section>
+    </div>
+  
+    <div id="matches">
+
+      {% include 'matches/live_score.html' %}
+
+    </div>
+  </div>
+  <section class="grid grid-cols-12  bg-black text-white p-4 w-full  overflow-y-auto my-4  ">
+    <div class="col-span-2  text-left border-r border-gray-700">
+      <div class="flex flex-col gap-3 text-left">
+        <a class="flex gap-2 " href="{%url 'posts:home_view' %}">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+          </svg>
+          <h2>Home </h2>
+        </a>
+        <a class="flex gap-2 " href="">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+
+          <h2>Explore </h2>
+        </a>
+        <a class="flex gap-2 " href="">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+          </svg>
+          <h2>Notifications</h2>
+        </a>
+        <a class="flex gap-2 " href="{%url 'accounts:bookmark_view' %}">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+          </svg>
+
+          <h2>Bookmarks </h2>
+        </a>
+        {% if request.user.is_authenticated%}
+
+        <a class="flex gap-2 " href="{%url 'accounts:profile_view' request.user.username %}">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+          </svg>
+
+          <h2>Profile </h2>
+        </a>
+        {% endif %}
+
+        <a class="flex gap-2 " href="#">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+
+
+          <h2>More </h2>
+        </a>
+        {% if request.user.is_authenticated %}
+        <a href="{%url 'accounts:logout_account' %}">logout</a>
+        <p>{{requset.user.profile.profile_image}}</p>
+        {% else %}
+        <a href="{%url 'accounts:login_account_view' %}">Login</a>
+        <a href="{%url 'accounts:create_account_view' %}">Sign Up</a>
+
+
+
+
+        {% endif %}
+
+      </div>
+    </div>
+
+    <div class="col-span-8 text-center border-r border-gray-700">
+      {% block content %}
+      {% endblock %}
+    </div>
+    <div class="col-span-2">
       
 
-   
+
+    </div>
+  </section>
+
+  <script>
+    /* 
+      We'll store the container's scrollLeft (horizontal offset) so that 
+      the user remains scrolled to the same position after the partial swap. 
+    */
+    let oldScrollLeft = 0;
+
+// Before swapping out #matches, record the scrollLeft
+document.addEventListener('htmx:beforeSwap', function(evt) {
+  if (evt.target.id === 'matches') {
+    const container = document.getElementById('matches-container');
+    if (container) {
+      oldScrollLeft = container.scrollLeft;
+    }
+  }
+});
+
+// After #matches is swapped in
+document.addEventListener('htmx:afterSwap', function(evt) {
+  if (evt.target.id === 'matches') {
+    const container = document.getElementById('matches-container');
+    const btnLeft = document.getElementById('scroll-left');
+    const btnRight = document.getElementById('scroll-right');
+    const scrollAmount = 220;
+
+    // Reattach arrow events
+    if (container && btnLeft && btnRight) {
+      btnLeft.addEventListener('click', () => {
+        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      });
+      btnRight.addEventListener('click', () => {
+        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      });
+    }
+
+    // Instantly restore user’s scroll without animation
+    if (container) {
+      const oldBehavior = container.style.scrollBehavior;
+      container.style.scrollBehavior = 'auto'; // turn off animation
+      container.scrollLeft = oldScrollLeft;     // jump to old offset
+      container.style.scrollBehavior = oldBehavior; // re-enable smooth for arrow clicks
+    }
+  }
+});
+  </script>
 </body>
+
 </html>
