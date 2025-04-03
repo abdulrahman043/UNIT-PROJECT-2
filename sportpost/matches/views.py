@@ -25,19 +25,3 @@ def live_score_view(request:HttpRequest):
     print(matches)
     
     return render(request, "matches/live_score.html", {"matches": matches,"selected_date":selected_date})
-def update_score_only(request):
-    match_id = request.GET.get("match_id")
-    side = request.GET.get("side")
-    
-    if not match_id or not side:
-        return HttpResponse("Missing parameters.", status=400)
-    
-    match = get_object_or_404(Match, pk=match_id)
-    
-    # Determine which score to return
-    if side == "home":
-        return HttpResponse(match.home_score)
-    elif side == "away":
-        return HttpResponse(match.away_score)
-    else:
-        return HttpResponse("Invalid 'side'.", status=400)
