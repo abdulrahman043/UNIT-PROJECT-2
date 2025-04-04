@@ -4,6 +4,18 @@ Page Title
 {% endblock %}
 {% block content %}
 <div class="flex flex-col gap-4 w-full">
+  <div class="flex flex-row gap-4 items-center px-3">
+  <a href="{%url 'posts:home_view'%} "><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+    stroke-width="1.5" stroke="currentColor" class="size-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+</svg>
+</a>
+<h2 class="text-xl">Post</h2>
+</div>
+{% if post.parent_post %}
+  {% include 'posts/recursive_post.html' with post=post %}
+{%endif%}
+
 
     <div id="tweet-{{ post.id }}" class="card border-2 border-gray-700 p-5 flex gap-5 flex-col ">
       {%include 'posts/post.html'%}

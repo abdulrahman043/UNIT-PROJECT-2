@@ -164,3 +164,30 @@ def add_repost(request: HttpRequest, post_id):
                 ''')
         return redirect('posts:home_view')
     return redirect('posts:home_view')
+def search_user_view(request:HttpRequest):
+    query=request.GET.get("q")
+    if query:
+        users=User.objects.filter(username__contains=query)
+    selected_date=request.GET.get("match_date")
+    if selected_date:
+        try:
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = timezone.now().date()
+    else:
+        selected_date = timezone.now().date()
+
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
+    
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        "is_selected": (day == selected_date),  
+        "day_name": day.strftime("%a")           
+    }
+        days_list.append(day_dict)
+    matches = Match.objects.filter(date=selected_date).order_by("time")
+        
+    
+    return render(request,"accounts/search_user.html",{"users":users,"matches":matches,"days_list":days_list,"selected_date":selected_date,"query":query,"in_search":True})

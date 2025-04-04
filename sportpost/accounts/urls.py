@@ -13,6 +13,7 @@ urlpatterns = [
            path("like",views.like_view,name="like_view"),
         path('like/<post_id>',views.add_like,name="add_like"),
         path('repost/<post_id>',views.add_repost,name="add_repost"),
+        path('search/',views.search_user_view,name="search_user_view")
 
 
 

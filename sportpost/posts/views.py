@@ -82,7 +82,34 @@ def detail_post_view(request,id):
 
 
 
+def search_view(request:HttpRequest):
+    query=request.GET.get("q")
+    if query:
+        users=User.objects.filter(username__contains=query)[0:3]
+        posts=Post.objects.filter(content__contains=query).order_by('-created_at')
+    selected_date=request.GET.get("match_date")
+    if selected_date:
+        try:
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = timezone.now().date()
+    else:
+        selected_date = timezone.now().date()
+
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
+    
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        "is_selected": (day == selected_date),  
+        "day_name": day.strftime("%a")           
+    }
+        days_list.append(day_dict)
+    matches = Match.objects.filter(date=selected_date).order_by("time")
         
+    
+    return render(request,"posts/search.html",{"users":users,"posts":posts,"matches":matches,"days_list":days_list,"selected_date":selected_date,"query":query,"in_search":True})
 
 def is_bookmarked(posts, user):
     try:
@@ -121,3 +148,5 @@ def is_reposted(posts, user):
     except Exception as e:
         print(e)
 
+def game_post_view(request:HttpRequest,game_id):
+    return render(request,"posts/game_post.html")

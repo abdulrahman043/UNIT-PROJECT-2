@@ -1,7 +1,7 @@
 <div
   id="matches"
   hx-get="{% url 'matches:live_score_view' %}?match_date={{ selected_date|date:'Y-m-d' }}"
-  hx-trigger="every 15s"
+  hx-trigger="every 60s"
   hx-swap="innerHTML"
 >
 <style>
@@ -30,6 +30,7 @@
       class="flex space-x-4 overflow-hidden w-full snap-x snap-mandatory scroll-smooth"
     >
       {% for match in matches %}
+      <a href="{%url 'posts:game_post_view' match.game_id %}">
         <div
           class="card bg-gray-800 rounded-lg shadow p-4 flex-shrink-0 min-w-[200px]
                  snap-start"
@@ -61,6 +62,7 @@
             </span>
           </div>
         </div>
+      </a>
       {% endfor %}
     </div>
 

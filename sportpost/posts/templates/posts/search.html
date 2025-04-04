@@ -1,0 +1,70 @@
+{% extends 'posts/base.html' %}
+{% block title %}
+Page Title
+{% endblock %}
+{% block content %}
+<form class=" mx-auto border-2  border-gray-700 w-full" action="{%url 'posts:search_view'%}"  method="get">
+    <div class="flex w-full ">
+        <a class="self-center" href="{%url 'posts:home_view'%} "><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+        </svg>
+    </a>
+      <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-black border border-e-0 border-gray-300 rounded-s-md dark:bg-black dark:text-gray-400 dark:border-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+        
+      </span>
+      
+      <input type="text" name="q" id="search" class="rounded-none rounded-e-lg bg-black border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" value="{{query}}" >
+    </div>
+  </form>
+{%if users or posts%}
+    {%if users%}
+    <div class="border-2  border-gray-700">
+    <div class="px-4 py-3 flex flex-col gap-5 ">
+        
+        <h3 class="text-left text-3xl">People</h3>
+        {%for user in users%}
+        <a href="{%url 'accounts:profile_view' user.username %}">
+            <div class="card flex flex-row gap-4 ">
+
+                <div><img class="h-12 w-12 rounded-full object-cover" src="{{ user.profile.profile_image.url }}"
+                        alt="{{ user.username }}'s profile image" />
+                </div>
+                <div class="flex flex-col text-left">
+                    <h4>{{ user.profile.name }}</h4>
+                    <h2 class="text-gray-400">@{{ user.username }}</h2>
+                    <p>{{ user.profile.bio }}</p>
+
+
+                </div>
+
+            </div>
+        </a>
+        {%endfor%}
+        <a href="{% url 'accounts:search_user_view' %}?q={{ request.GET.q|urlencode }}" class="text-left text-blue-600">view all</a>
+    </div>
+</div>
+{%endif%}
+
+<div class="flex flex-col gap-4 w-full">
+    {% for post in posts %}
+
+    <div id="tweet-{{ post.id }}" class="card border-b-2 border-gray-700 p-5 flex gap-5 flex-col ">
+      {%include 'posts/post.html'%}
+    </div>
+    
+    {%endfor%}
+
+</div>
+{%else%}
+<p>nothing here</p>
+
+
+
+{%endif%}
+
+
+{% endblock %}
