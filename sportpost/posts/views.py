@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.http import HttpRequest,HttpResponseForbidden,HttpResponse
+from django.http import HttpRequest,HttpResponseForbidden,HttpResponse,HttpResponseNotFound
 from .forms import PostForm
 from .models import Post
 from django.contrib.auth.models import User
@@ -44,12 +44,19 @@ def home_view(request:HttpRequest):
 def add_post(request:HttpRequest):
     if not request.user.is_authenticated:
         return redirect("accounts:create_account_view")
+    game_id=request.GET.get("id")
     if request.method=="POST":
         post_form=PostForm(request.POST)
         if post_form.is_valid():
             post = post_form.save(commit=False)
             post.user = request.user
-            post.save()
+            if game_id:
+                match=Match.objects.get(game_id=game_id)
+                post.game=match
+                post.save()
+                return redirect("posts:game_post_view",game_id)
+            else:
+                post.save()
             return redirect("posts:home_view")
 def add_replay(request:HttpRequest,id:int):
     if not request.user.is_authenticated:
@@ -149,4 +156,10 @@ def is_reposted(posts, user):
         print(e)
 
 def game_post_view(request:HttpRequest,game_id):
-    return render(request,"posts/game_post.html")
+    try:
+        match = Match.objects.get(game_id=game_id)
+    except Match.DoesNotExist:
+        return HttpResponseNotFound("Match not found.")
+    posts=Post.objects.filter(game_id=game_id).order_by('-created_at')
+
+    return render(request,"posts/game_post.html",{"match":match,"posts":posts,"game_post":True})

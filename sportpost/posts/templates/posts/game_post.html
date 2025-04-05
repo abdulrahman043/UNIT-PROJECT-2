@@ -4,8 +4,10 @@ Page Title
 {% endblock %}
 {% block content %}
 <div class="flex w-full flex-col">
+    <div><p>{{match.game_id}}</p></div>
     {% if request.user.is_authenticated %}
-    <form class="w-full " method="POST" action="{% url 'posts:add_post' %}">
+    
+    <form class="w-full " method="POST" action="{% url 'posts:add_post' %}?id={{match.game_id}}">
         {%csrf_token%}
 
         <div class="w-full mb-4 border border-gray-200 rounded-lg bg-black dark:bg-black dark:border-gray-600 ">

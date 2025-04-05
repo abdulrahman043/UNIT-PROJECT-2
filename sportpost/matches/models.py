@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Team(models.Model):
-    team_id=models.CharField(max_length=100, unique=True, blank=True, null=True)
+    team_id=models.CharField(primary_key=True,max_length=30)
     name=models.CharField(max_length=50,unique=True)
     leauge=models.CharField(max_length=6,null=True,blank=True)
     short_name=models.CharField(max_length=100, unique=True, blank=True, null=True)
@@ -15,7 +15,7 @@ class Team(models.Model):
     def __str__(self):
         return f"{self.name}"
 class Match(models.Model):
-    game_id = models.CharField(max_length=100, unique=True, blank=True, null=True)
+    game_id = models.CharField(primary_key=True,max_length=30)
     home_team = models.ForeignKey(Team,on_delete=models.CASCADE,related_name='home_matches')
     away_team = models.ForeignKey(Team,on_delete=models.CASCADE,related_name='away_matches')
     home_score = models.PositiveIntegerField(default=0)

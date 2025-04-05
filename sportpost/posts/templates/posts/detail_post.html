@@ -20,17 +20,19 @@ Page Title
     <div id="tweet-{{ post.id }}" class="card border-2 border-gray-700 p-5 flex gap-5 flex-col ">
       {%include 'posts/post.html'%}
     </div>
-
-    <div>
-      <form class="bg-black flex" action="{% url 'posts:add_replay' post.id %}" method="post">
+<div class="border-b border-gray-600">
+    <div class="mx-5">
+      <form class="bg-black flex  py-4 m-0 w-full  " action="{% url 'posts:add_replay' post.id %}" method="post">
         {%csrf_token%}
+        <div class="flex gap-6 w-full">
         <img class="h-12 w-12 rounded-full object-cover" src="{{ request.user.profile.profile_image.url }}">
 
-        <input class="bg-black text-white" type="text" name="content" placeholder="post your replay" required>
-        <button>Post</button>
+        <input class="bg-black text-white border-none w-[90%]" type="text" name="content" placeholder="post your replay" required>
+        <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Post</button>
+      </div>
       </form>
     </div>
-
+  </div>
   
     <div class="flex flex-col gap-4 w-full">
       {%for replie in replies %}

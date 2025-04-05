@@ -1,10 +1,11 @@
 from django.db import models, IntegrityError
 from django.contrib.auth.models import User
-
+from matches.models import Match
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    game=models.ForeignKey(Match,on_delete=models.CASCADE,related_name="game",null=True,blank=True)
     parent_post = models.ForeignKey(
         'self', 
         null=True, 
