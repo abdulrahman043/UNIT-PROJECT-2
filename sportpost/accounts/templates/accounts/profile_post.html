@@ -12,7 +12,7 @@ Page Title
         </a>
         <div class="flex flex-col text-left">
             <h1>{{profile.user.username}}</h1>
-            <h1 class="text-gray-600">{{posts.count}} posts</h1>
+            <h1 class="text-gray-600">{%if posts.count%}{{posts.count}}{%else%}0{%endif%} posts</h1>
 
 
         </div>

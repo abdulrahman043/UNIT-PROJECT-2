@@ -133,9 +133,10 @@
       <p class="text-left text-gray-600">{{ post.created_at|date:"P M j Y" }}</p>
 
     {% endif %}
-
-
-
+      {%if post.image%}
+      <a class="w-full" href="{{post.image.url}}"><img class="max-h-69 w-full" src="{{post.image.url}}" alt=""></a>
+      {%endif%}
+      
 
     {% endif %}
     <div class="flex justify-evenly">

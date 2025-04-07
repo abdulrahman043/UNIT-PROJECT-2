@@ -46,8 +46,9 @@ def profile_replys_view(request:HttpRequest,username):
     profile=user.profile
     
     posts = Post.objects.filter(user=user, parent_post__isnull=False).order_by("-created_at")
-    posts=is_bookmarked(posts,request.user)
-    posts=is_liked(posts,request.user)
+    if request.user.is_authenticated:
+        posts=is_bookmarked(posts,request.user)
+        posts=is_liked(posts,request.user)
     selected_date=request.GET.get("match_date")
     if selected_date:
         try:
@@ -78,8 +79,9 @@ def profile_posts_view(request:HttpRequest,username):
     profile=user.profile
     
     posts = Post.objects.filter(user=user, parent_post__isnull=True).order_by("-created_at")
-    posts=is_bookmarked(posts,request.user)
-    posts=is_liked(posts,request.user)
+    if request.user.is_authenticated:
+        posts=is_bookmarked(posts,request.user)
+        posts=is_liked(posts,request.user)
     selected_date=request.GET.get("match_date")
     if selected_date:
         try:
@@ -108,8 +110,9 @@ def profile_likes_view(request:HttpRequest,username):
     user=User.objects.get(username=username)
     profile=user.profile
     posts = Post.objects.filter(like__user=user).order_by("-created_at")
-    posts=is_bookmarked(posts,request.user)
-    posts=is_liked(posts,request.user)
+    if request.user.is_authenticated:
+        posts=is_bookmarked(posts,request.user)
+        posts=is_liked(posts,request.user)
     selected_date=request.GET.get("match_date")
     if selected_date:
         try:

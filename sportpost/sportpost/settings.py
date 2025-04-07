@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-
+from decouple import config as env_config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tailwind',
+    'storages',
     'theme',
     'django_browser_reload',
     "posts",
@@ -51,7 +52,30 @@ INSTALLED_APPS = [
 
 
 ]
-MEDIA_URL = "/media/"
+try:
+    from decouple import config
+except ImportError:
+    import os
+    config = os.environ.get
+
+CLOUDFLARE_R2_CONFIG_OPTIONS = {
+    "bucket_name": config("CLOUDFLARE_R2_BUCKET"),
+    "default_acl": "public-read",  # or "private"
+    "signature_version": "s3v4",
+    "endpoint_url": config("CLOUDFLARE_R2_BUCKET_ENDPOINT"),
+    "access_key": config("CLOUDFLARE_R2_ACCESS_KEY"),
+    "secret_key": config("CLOUDFLARE_R2_SECRET_KEY"),
+}
+STORAGES = {
+    "default": {
+ "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": CLOUDFLARE_R2_CONFIG_OPTIONS,    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+endpoint = config("CLOUDFLARE_R2_BUCKET_ENDPOINT").split("//")[1]
+MEDIA_URL = f'https://{CLOUDFLARE_R2_CONFIG_OPTIONS["bucket_name"]}.{endpoint}/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MIDDLEWARE = [

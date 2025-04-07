@@ -3,9 +3,9 @@
 Page Title
 {% endblock %}
 {% block content %}
-<div class="flex w-full flex-col w-full mx-0">
+<div class="flex w-full flex-col  mx-0">
     {% if request.user.is_authenticated %}
-    <form class="w-full " method="POST" action="{% url 'posts:add_post' %}">
+    <form class="w-full " method="POST" action="{% url 'posts:add_post' %}" enctype="multipart/form-data">
         {%csrf_token%}
 
         <div class="w-full mb-4 border border-gray-200 rounded-lg bg-black dark:bg-black dark:border-gray-600 ">
@@ -26,16 +26,9 @@ Page Title
                         </svg>
                         <span class="sr-only">Attach file</span>
                     </button>
-                    <input type="file" name="image" id="imageUpload" class="hidden">
-                    <label for="imageUpload"
-                        class="inline-flex justify-center items-center p-2 text-gray-500 rounded-sm cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
-                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 20 18">
-                            <path
-                                d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z" />
-                        </svg>
-                        <span class="sr-only">Upload image</span>
-                    </label>
+                    <div class="flex justify-center items-center p-0 m-0">
+                    <input class="w-30 file:border file:rounded-xl hover:file:bg-gray-200 file:text-sm file:border-gray-200" type="file" name="image" id="imageUpload" accept="image/*">
+                </div>
                     <button type="submit"
                         class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
                         Post

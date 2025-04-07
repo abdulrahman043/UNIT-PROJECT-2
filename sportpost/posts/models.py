@@ -5,6 +5,7 @@ from django.utils import timezone
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
+    image=models.ImageField(null=True,blank=True,upload_to="images/posts_images")
     created_at = models.DateTimeField(auto_now_add=True)
     game=models.ForeignKey(Match,on_delete=models.CASCADE,related_name="game",null=True,blank=True)
     parent_post = models.ForeignKey(

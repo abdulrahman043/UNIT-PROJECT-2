@@ -48,7 +48,10 @@ def add_post(request:HttpRequest):
         return redirect("accounts:create_account_view")
     game_id=request.GET.get("id")
     if request.method=="POST":
-        post_form=PostForm(request.POST)
+        if "image" in request.FILES:
+            post_form=PostForm(request.POST,request.FILES)
+        else:
+            post_form=PostForm(request.POST)
         if post_form.is_valid():
             post = post_form.save(commit=False)
             post.user = request.user
@@ -117,6 +120,9 @@ def search_view(request:HttpRequest):
     if query:
         users=User.objects.filter(username__contains=query)[0:3]
         posts=Post.objects.filter(content__contains=query).order_by('-created_at')
+    else:
+        posts=None
+        users=None
     selected_date=request.GET.get("match_date")
     if selected_date:
         try:
@@ -138,7 +144,6 @@ def search_view(request:HttpRequest):
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
         
-    users=User.objects.order_by("?")[0:3]
 
     return render(request,"posts/search.html",{"users":users,"posts":posts,"matches":matches,"days_list":days_list,"selected_date":selected_date,"query":query,"in_search":True,"users":users})
 
