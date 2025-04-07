@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
-from .models import Profile,Bookmark,Like
+from .models import Profile,Bookmark,Like,Notification
 from matches.models import Match
 from django.http import HttpRequest,HttpResponse
 from django.utils import timezone
@@ -40,18 +40,98 @@ def login_account_view(request:HttpRequest):
 def logout_account(request:HttpRequest):
     logout(request)
     return redirect('posts:home_view')
-def profile_view(request:HttpRequest,username):
-    now = datetime.datetime.now()
-    today = now.strftime("%Y-%m-%d")
-    yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
-    matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time") 
+def profile_replys_view(request:HttpRequest,username):
+    
     user=User.objects.get(username=username)
     profile=user.profile
     
-    posts=Post.objects.filter(user=user).order_by("-created_at")
+    posts = Post.objects.filter(user=user, parent_post__isnull=False).order_by("-created_at")
     posts=is_bookmarked(posts,request.user)
     posts=is_liked(posts,request.user)
-    return render(request,"accounts/profile.html",{"posts":posts,"matches":matches,"profile_view":True,"profile":profile})
+    selected_date=request.GET.get("match_date")
+    if selected_date:
+        try:
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = timezone.now().date()
+    else:
+        selected_date = timezone.now().date()
+
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
+    
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        "is_selected": (day == selected_date),  
+        "day_name": day.strftime("%a")           
+    }
+        days_list.append(day_dict)
+    matches = Match.objects.filter(date=selected_date).order_by("time")
+    users=User.objects.order_by("?")[0:3]
+    return render(request,"accounts/profile_reply.html",{"posts":posts,"matches":matches,"profile_replys_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
+def profile_posts_view(request:HttpRequest,username):
+    now = datetime.datetime.now()
+    today = now.strftime("%Y-%m-%d")
+    yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+    user=User.objects.get(username=username)
+    profile=user.profile
+    
+    posts = Post.objects.filter(user=user, parent_post__isnull=True).order_by("-created_at")
+    posts=is_bookmarked(posts,request.user)
+    posts=is_liked(posts,request.user)
+    selected_date=request.GET.get("match_date")
+    if selected_date:
+        try:
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = timezone.now().date()
+    else:
+        selected_date = timezone.now().date()
+
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
+    
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        "is_selected": (day == selected_date),  
+        "day_name": day.strftime("%a")           
+    }
+        days_list.append(day_dict)
+    matches = Match.objects.filter(date=selected_date).order_by("time")
+    users=User.objects.order_by("?")[0:3]
+    return render(request,"accounts/profile_post.html",{"posts":posts,"matches":matches,"profile_post_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
+def profile_likes_view(request:HttpRequest,username):
+    now = datetime.datetime.now()
+    
+    user=User.objects.get(username=username)
+    profile=user.profile
+    posts = Post.objects.filter(like__user=user).order_by("-created_at")
+    posts=is_bookmarked(posts,request.user)
+    posts=is_liked(posts,request.user)
+    selected_date=request.GET.get("match_date")
+    if selected_date:
+        try:
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = timezone.now().date()
+    else:
+        selected_date = timezone.now().date()
+
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
+    
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        "is_selected": (day == selected_date),  
+        "day_name": day.strftime("%a")           
+    }
+        days_list.append(day_dict)
+    matches = Match.objects.filter(date=selected_date).order_by("time")
+    users=User.objects.order_by("?")[0:3]
+    return render(request,"accounts/profile_like.html",{"posts":posts,"matches":matches,"profile_likes_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
 def edit_profile_view(request:HttpRequest):
     return render(request,"accounts/edit_profile.html")
 def update_profile(request:HttpRequest):
@@ -72,8 +152,58 @@ def bookmark_view(request:HttpRequest):
     today = now.strftime("%Y-%m-%d")
     yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time") 
+      
+    selected_date=request.GET.get("match_date")
+    if selected_date:
+        try:
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = timezone.now().date()
+    else:
+        selected_date = timezone.now().date()
+
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
     
-    return render(request,"accounts/bookmark.html",{"matches":matches,"is_bookmarked":True})
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        "is_selected": (day == selected_date),  
+        "day_name": day.strftime("%a")           
+    }
+        days_list.append(day_dict)
+    matches = Match.objects.filter(date=selected_date).order_by("time")
+    users=User.objects.order_by("?")[0:3]
+    return render(request,"accounts/bookmark.html",{"matches":matches,"is_bookmarked":True,"days_list":days_list,"selected_date":selected_date,"users":users})
+def notification_view(request:HttpRequest):
+    now = datetime.datetime.now()
+    today = now.strftime("%Y-%m-%d")
+    yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+    matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time") 
+    notifications = request.user.receiver.all()
+      
+    selected_date=request.GET.get("match_date")
+    if selected_date:
+        try:
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = timezone.now().date()
+    else:
+        selected_date = timezone.now().date()
+
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
+    
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        "is_selected": (day == selected_date),  
+        "day_name": day.strftime("%a")           
+    }
+        days_list.append(day_dict)
+    matches = Match.objects.filter(date=selected_date).order_by("time")
+    users=User.objects.order_by("?")[0:3]
+    return render(request,"accounts/notification.html",{"matches":matches,"is_noti":True,"notifications":notifications,"days_list":days_list,"selected_date":selected_date,"users":users})
 
 def add_bookmark(request:HttpRequest,post_id):
     if request.method=="POST":
@@ -168,6 +298,8 @@ def search_user_view(request:HttpRequest):
     query=request.GET.get("q")
     if query:
         users=User.objects.filter(username__contains=query)
+    else:
+        users=User.objects.order_by("?")[0:100]
     selected_date=request.GET.get("match_date")
     if selected_date:
         try:

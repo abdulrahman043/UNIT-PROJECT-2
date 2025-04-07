@@ -12,7 +12,7 @@ from nba_api.live.nba.endpoints import scoreboard
 from datetime import datetime
 from matches.models import Team,Match
 import datetime
-
+from django.utils import timezone
 import requests
 
 
@@ -47,6 +47,11 @@ def my_job():
                 away_info = game.get("awayTeam", {})
                 home_team_name = home_info.get("teamName")
                 away_team_name = away_info.get("teamName")
+                if not home_team_name:
+                    home_team_name="TBD"
+                if not away_team_name:
+                    away_team_name="TBD"
+
                 if home_team_name == "Timberwolves":
                     home_team_name = "Wolves"
                 if away_team_name == "Timberwolves":
@@ -110,7 +115,7 @@ def my_job():
                         "time": game_time,
                         "game_clock": game_clock,
                         "game_status": game_status,
-                        "last_updated": datetime.datetime.now(),
+                        "last_updated": timezone.now(),
                     }
                 )
                 logger.info("Updated match %s on %s at %s", game_id, game_date, game_time)

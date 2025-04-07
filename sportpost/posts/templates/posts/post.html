@@ -99,6 +99,8 @@
           </div>
              {% endif %}
     </div>
+    <div class="flex justify-start items-start my-0 py-0 gap-6">
+      <p class="text-gray-400">{{post.time_since}}</p>
     <button class="group relative">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
             class="size-6">
@@ -113,9 +115,9 @@
                 delete
             </a>
             {%endif%}
-            <a href="">qwdwq</a>
         </div>
     </button>
+</div>
 </div>
 <div class="w-full flex flex-col gap-10">
     {% if not detail_view %}
@@ -142,7 +144,7 @@
       </svg>
       
       <button hx-swap="innerHTML" hx-target="#repost-{{post.id}}"  hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-post="{%url 'accounts:add_repost' post.id %}">
-        <svg id="repost-{{post.id}}"  xmlns="http://www.w3.org/2000/svg" fill="{% if post.is_reposted or is_reposted or post.repost_of %}green{% else %}none{% endif %}" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <svg id="repost-{{post.id}}"  xmlns="http://www.w3.org/2000/svg" fill="{% if post.is_reposted or is_reposted or request.user.is_authenticated and post.repost_of and post.user == request.user %}green{% else %}none{% endif %}" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
         </svg>
      </button>

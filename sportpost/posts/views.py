@@ -34,13 +34,15 @@ def home_view(request:HttpRequest):
     }
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
+    users=User.objects.order_by("?")[0:3]
 
     posts=Post.objects.all().order_by('-created_at')
     if request.user.is_authenticated:
         posts=is_bookmarked(posts,request.user)
         posts=is_liked(posts,request.user)
         posts=is_reposted(posts,request.user)
-    return render(request,"posts/home.html",{"posts":posts,"matches":matches,"days_list":days_list,"selected_date":selected_date})
+
+    return render(request,"posts/home.html",{"posts":posts,"matches":matches,"days_list":days_list,"selected_date":selected_date,"users":users})
 def add_post(request:HttpRequest):
     if not request.user.is_authenticated:
         return redirect("accounts:create_account_view")
@@ -84,8 +86,29 @@ def detail_post_view(request,id):
     yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time") 
     replies = post.replies.all()
+    selected_date=request.GET.get("match_date")
+    if selected_date:
+        try:
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = timezone.now().date()
+    else:
+        selected_date = timezone.now().date()
 
-    return render(request,"posts/detail_post.html",{"post":post,"matches":matches,"detail_view": True,"replies":replies})
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
+    
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        "is_selected": (day == selected_date),  
+        "day_name": day.strftime("%a")           
+    }
+        days_list.append(day_dict)
+    matches = Match.objects.filter(date=selected_date).order_by("time")
+    users=User.objects.order_by("?")[0:3]
+
+    return render(request,"posts/detail_post.html",{"post":post,"matches":matches,"detail_view": True,"replies":replies,"days_list":days_list,"selected_date":selected_date,"users":users})
 
 
 
@@ -115,8 +138,9 @@ def search_view(request:HttpRequest):
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
         
-    
-    return render(request,"posts/search.html",{"users":users,"posts":posts,"matches":matches,"days_list":days_list,"selected_date":selected_date,"query":query,"in_search":True})
+    users=User.objects.order_by("?")[0:3]
+
+    return render(request,"posts/search.html",{"users":users,"posts":posts,"matches":matches,"days_list":days_list,"selected_date":selected_date,"query":query,"in_search":True,"users":users})
 
 def is_bookmarked(posts, user):
     try:
@@ -161,5 +185,6 @@ def game_post_view(request:HttpRequest,game_id):
     except Match.DoesNotExist:
         return HttpResponseNotFound("Match not found.")
     posts=Post.objects.filter(game_id=game_id).order_by('-created_at')
+    users=User.objects.order_by("?")[0:3]
 
-    return render(request,"posts/game_post.html",{"match":match,"posts":posts,"game_post":True})
+    return render(request,"posts/game_post.html",{"match":match,"posts":posts,"game_post":True,"users":users})

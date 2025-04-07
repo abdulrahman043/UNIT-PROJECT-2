@@ -1,0 +1,64 @@
+{% extends 'posts/base.html' %}
+{% block title %}
+Page Title
+{% endblock %}
+{% block content %}
+<div>
+    <div class="flex flex-row gap-5 items-center ml-1 p-2 ">
+        <a href="{%url 'posts:home_view'%} "><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+        </a>
+        <div class="flex flex-col text-left">
+            <h1>{{profile.user.username}}</h1>
+            <h1 class="text-gray-600">{{posts.count}} posts</h1>
+
+
+        </div>
+    </div>
+</div>
+<div class=" border border-gray-700 flex flex-col ">
+    <div class="mx-3 my-3">
+    <div class="flex text-center justify-between">
+        <img class="h-20 w-20 rounded-full object-cover ml-4" src="{{ profile.user.profile.profile_image.url }}"
+            alt="{{ profile.user.username }}'s profile image" />
+            {% if request.user == profile.user %}
+
+        <div class="flex items-center">
+            <a href="{% url 'accounts:edit_profile_view' %}" class="bg-black text-white font-bold rounded-xl border-2 border-gray-700  p-2 h-10 hover:bg-gray-900">
+                Edit Profile
+              </a>        </div>
+        {% endif %}
+    </div>
+    <div class="text-left felx flex-col">
+         <h1>{{profile.user.profile.name}}</h1>
+         <h1 class="text-gray-600">@{{profile.user.username}}</h1>
+         <p {% if posts.0.user.profile.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words" {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>{{profile.user.profile.bio}}</p>
+            <h1 class="flex gap-2 text-gray-500"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+          </svg>
+        Joined {{ profile.user.date_joined|date:"F Y" }}</h1>
+
+        </div>
+    </div>
+    <div class="flex justify-between items-center text-xl px-10 text-gray-400 mt-3 my-3">
+        <a href="{%url 'accounts:profile_view' profile.user.username%}">Posts</a>
+        <a class="text-white underline " href="{%url 'accounts:profile_replys_view' profile.user.username%}">Replies</a>
+        <a href="{%url 'accounts:profile_likes_view' profile.user.username%}">Likes</a>
+    </div>
+</div>
+<div class="flex flex-col gap-4 w-full">
+    {% for post in posts %}
+
+    <div id="tweet-{{ post.id }}" class="card border-b-2 border-gray-700 p-5 flex gap-5 flex-col ">
+        {%include 'posts/post.html'%}
+    </div>
+    {%empty%}
+    <h1 class="text-center text-2xl mt-4">No Replies here</h1>
+    {%endfor%}
+
+</div>
+
+
+{% endblock %}

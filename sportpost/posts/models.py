@@ -1,6 +1,7 @@
 from django.db import models, IntegrityError
 from django.contrib.auth.models import User
 from matches.models import Match
+from django.utils import timezone
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
@@ -37,13 +38,22 @@ class Post(models.Model):
                 if '\u0600' <= first_char <= '\u06FF':
                     return "text-right"
         return "text-left"
+    @property
+    def time_since(self):
+       
+        now = timezone.now()
+        diff = now - self.created_at
+        seconds = diff.total_seconds()
 
-    class Meta:
-        # Enforce that a user can repost a given post only once.
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'repost_of'],
-                name='unique_repost',
-                condition=models.Q(repost_of__isnull=False)
-            )
-        ]
+        if seconds < 60:
+            return "just now"
+        elif seconds < 3600:
+            minutes = int(seconds / 60)
+            return f"{minutes}m"
+        elif seconds < 86400:
+            hours = int(seconds / 3600)
+            return f"{hours}h"
+        else:
+            days = int(seconds / 86400)
+            return f"{days}d"
+ 
