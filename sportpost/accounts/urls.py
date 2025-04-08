@@ -19,6 +19,10 @@ urlpatterns = [
         path('repost/<post_id>',views.add_repost,name="add_repost"),
         path('search/',views.search_user_view,name="search_user_view"),
         path("notification/",views.notification_view,name="notification_view"),
+        path("add_follow/<username>",views.add_delate_follow,name="add_delate_follow"),
+        path("<username>/follwing/",views.user_following_view,name="user_following_view"),
+                path("<username>/followers/",views.user_followers_view,name="user_followers_view"),
+
 
 
 

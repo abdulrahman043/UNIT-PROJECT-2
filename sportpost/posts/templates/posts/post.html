@@ -53,7 +53,6 @@
               delete
           </a>
           {%endif%}
-          <a href="">qwdwq</a>
       </div>
   </button>
 </div>
@@ -79,6 +78,12 @@
             <a href="{%url 'accounts:profile_view' post.user.username %}"><h4>{{post.user.profile.name}}</h4></a>
               <a href="{%url 'accounts:profile_view' post.user.username %}"> <h4>@{{post.user.username}}</h4></a>
             </div>
+            {%if post.game %}
+            <p class="text-gray-600">{{post.game}}</p>
+            {%else%}
+            <p class="text-gray-600">Genreal</p>
+
+            {%endif%}
               {%if post.parent_post %}
               <p class="text-gray-600">Replying to <a class="text-blue-600 hover:underline" href="{%url 'accounts:profile_view' post.parent_post.user.username %}"> @{{post.parent_post.user.username}} </a></p>
               {%endif%}
@@ -120,23 +125,28 @@
 </div>
 </div>
 <div class="w-full flex flex-col gap-10">
-    {% if not detail_view %}
-      <a href="{% url 'posts:detail_post_view' post.id %}">
-        <p {% if post.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words" {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>
-          {{ post.content }}
-        </p>
-      </a>
-    {% else %}
+    {% if detail_view and post.id == id %}
     <p  {% if post.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words " {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>
       {{ post.content }}
       </p>
-      <p class="text-left text-gray-600">{{ post.created_at|date:"P M j Y" }}</p>
+    {% else %}
+    <a href="{% url 'posts:detail_post_view' post.id %}">
+      <p {% if post.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words" {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>
+        {{ post.content }}
+      </p>
+    </a>
+   
 
     {% endif %}
       {%if post.image%}
-      <a class="w-full" href="{{post.image.url}}"><img class="max-h-69 w-full" src="{{post.image.url}}" alt=""></a>
-      {%endif%}
+      <a class="w-full" href="{{post.image.url}}"><img class="max-h-[80vh] w-full" src="{{post.image.url}}" alt=""></a>
       
+
+      {%endif%}
+      {%if post.id == id%}
+
+      <p class="text-left text-gray-600">{{ post.created_at|date:"P M j Y" }}</p>
+      {% endif %}
 
     {% endif %}
     <div class="flex justify-evenly">

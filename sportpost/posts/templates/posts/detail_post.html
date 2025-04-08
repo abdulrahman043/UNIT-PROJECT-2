@@ -16,24 +16,40 @@ Page Title
   {% include 'posts/recursive_post.html' with post=post %}
 {%endif%}
 
-
+{% if not post.parent_post %}
     <div id="tweet-{{ post.id }}" class="card border-2 border-gray-700 p-5 flex gap-5 flex-col ">
       {%include 'posts/post.html'%}
     </div>
+    {%endif%}
+
 <div class="border-b border-gray-600">
     <div class="mx-5">
-      <form class="bg-black flex  py-4 m-0 w-full  " action="{% url 'posts:add_replay' post.id %}" method="post">
+      <form class="bg-black flex  py-4 m-0 w-full  " action="{% url 'posts:add_replay' post.id %}" method="post" enctype="multipart/form-data">
         {%csrf_token%}
-        <div class="flex gap-6 w-full">
-        <img class="h-12 w-12 rounded-full object-cover" src="{{ request.user.profile.profile_image.url }}">
-
-        <input class="bg-black text-white border-none w-[90%]" type="text" name="content" placeholder="post your replay" maxlength="240" required>
-        <button  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Post</button>
+        <div class="w-full mb-4 border border-gray-200 rounded-lg bg-black dark:bg-black dark:border-gray-600 ">
+          <div class="px-4 py-2 bg-white rounded-t-lg dark:bg-black ">
+              <label for="content" class="sr-only">content</label>
+              <textarea name="content" id="content" rows="2"
+                  class="w-full px-0 text-sm text-gray-900 resize-y bg-white border-0 dark:bg-black focus:ring-0 dark:text-white dark:placeholder-gray-400  "
+                  placeholder="Write a comment..." required maxlength="240"></textarea>
+          </div>
+          <div class="flex items-center justify-end px-3 py-2 border-t dark:border-gray-600 border-gray-200">
+              <div class="flex ps-0 space-x-1 rtl:space-x-reverse sm:ps-2 ">
+                  
+                  <div class="flex justify-center items-center p-0 m-0">
+                  <input class="w-30 file:border file:rounded-xl hover:file:bg-gray-200 file:text-sm file:border-gray-200" type="file" name="image" id="imageUpload" accept="image/*">
+              </div>
+                  <button type="submit"
+                      class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
+                      Post
+                  </button>
+              </div>
+          </div>
       </div>
       </form>
     </div>
   </div>
-  
+    {%if replies%}
     <div class="flex flex-col gap-4 w-full">
       {%for replie in replies %}
 
@@ -42,11 +58,9 @@ Page Title
         {%include 'posts/post.html'%}
         {% endwith %}
       </div>
-      {%empty%}
-      <div class="text-center text-3xl">
-      <h1>no post</h1>
-      </div>
+    
       {%endfor%}
+      {%endif%}
 
   </div>
 </div>

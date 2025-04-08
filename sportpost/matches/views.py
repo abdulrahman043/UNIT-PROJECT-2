@@ -6,9 +6,7 @@ from django.http import HttpRequest,HttpResponse
 
 # Create your views here.
 def live_score_view(request:HttpRequest):
-    now = datetime.datetime.now()
-    today = now.strftime("%Y-%m-%d")
-    yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+    
     selected_date=request.GET.get("match_date")
     if selected_date:
         try:
@@ -17,11 +15,8 @@ def live_score_view(request:HttpRequest):
             selected_date = timezone.now().date()
     else:
         selected_date = timezone.now().date()
-    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
     if not selected_date:
         selected_date = timezone.now().date()
-    print(selected_date)
     matches = Match.objects.filter(date=selected_date).order_by("time")
-    print(matches)
     
     return render(request, "matches/live_score.html", {"matches": matches,"selected_date":selected_date})

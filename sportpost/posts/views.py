@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from matches.models import Match
 from django.utils import timezone
 import datetime
-from accounts.models import Bookmark,Like
+from accounts.models import Bookmark,Like,Follow
 
 from django.db.models import Exists, OuterRef
 
@@ -43,6 +43,39 @@ def home_view(request:HttpRequest):
         posts=is_reposted(posts,request.user)
 
     return render(request,"posts/home.html",{"posts":posts,"matches":matches,"days_list":days_list,"selected_date":selected_date,"users":users})
+def home_following_view(request:HttpRequest):
+    if not request.user.is_authenticated:
+        return redirect('accounts:login_account_view')
+    selected_date=request.GET.get("match_date")
+    if selected_date:
+        try:
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = timezone.now().date()
+    else:
+        selected_date = timezone.now().date()
+
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
+    
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        "is_selected": (day == selected_date),  
+        "day_name": day.strftime("%a")           
+    }
+        days_list.append(day_dict)
+    matches = Match.objects.filter(date=selected_date).order_by("time")
+    users=User.objects.order_by("?")[0:3]
+    following_ids=Follow.objects.filter(follower=request.user).values_list('following__id',flat=True)
+    posts=Post.objects.filter(user__id__in=following_ids).order_by('-created_at')
+    
+    if request.user.is_authenticated:
+        posts=is_bookmarked(posts,request.user)
+        posts=is_liked(posts,request.user)
+        posts=is_reposted(posts,request.user)
+
+    return render(request,"posts/home_following.html",{"posts":posts,"matches":matches,"days_list":days_list,"selected_date":selected_date,"users":users})
 def add_post(request:HttpRequest):
     if not request.user.is_authenticated:
         return redirect("accounts:create_account_view")
@@ -68,7 +101,17 @@ def add_replay(request:HttpRequest,id:int):
         return redirect("accounts:create_account_view")
     if request.method=="POST":
         post=Post.objects.get(pk=id)
-        replay_post=Post.objects.create(user=request.user,content=request.POST["content"],parent_post=post)
+        if post.game:
+            if "image" in request.FILES:
+                replay_post=Post.objects.create(user=request.user,content=request.POST["content"],parent_post=post,image=request.FILES["image"],game=post.game)
+            else:
+                replay_post=Post.objects.create(user=request.user,content=request.POST["content"],parent_post=post,game=post.game)
+        else:
+            if "image" in request.FILES:
+                replay_post=Post.objects.create(user=request.user,content=request.POST["content"],parent_post=post,image=request.FILES["image"])
+            else:
+                replay_post=Post.objects.create(user=request.user,content=request.POST["content"],parent_post=post)
+
         return redirect("posts:detail_post_view", id=post.id)
 
 
@@ -111,7 +154,7 @@ def detail_post_view(request,id):
     matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
 
-    return render(request,"posts/detail_post.html",{"post":post,"matches":matches,"detail_view": True,"replies":replies,"days_list":days_list,"selected_date":selected_date,"users":users})
+    return render(request,"posts/detail_post.html",{"post":post,"matches":matches,"detail_view": True,"replies":replies,"days_list":days_list,"selected_date":selected_date,"users":users,"id":post.id})
 
 
 
@@ -191,5 +234,62 @@ def game_post_view(request:HttpRequest,game_id):
         return HttpResponseNotFound("Match not found.")
     posts=Post.objects.filter(game_id=game_id).order_by('-created_at')
     users=User.objects.order_by("?")[0:3]
+    if request.user.is_authenticated:
+        posts=is_bookmarked(posts,request.user)
+        posts=is_liked(posts,request.user)
+        posts=is_reposted(posts,request.user)
+    selected_date=request.GET.get("match_date")
+    if selected_date:
+        try:
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = timezone.now().date()
+    else:
+        selected_date = timezone.now().date()
 
-    return render(request,"posts/game_post.html",{"match":match,"posts":posts,"game_post":True,"users":users})
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
+    
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        "is_selected": (day == selected_date),  
+        "day_name": day.strftime("%a")           
+    }
+        days_list.append(day_dict)
+    matches = Match.objects.filter(date=selected_date).order_by("time")
+    return render(request,"posts/game_post.html",{"match":match,"posts":posts,"game_post":True,"users":users,"matches":matches,"days_list":days_list,"selected_date":selected_date})
+def game_post_following_view(request:HttpRequest,game_id):
+    try:
+        match = Match.objects.get(game_id=game_id)
+    except Match.DoesNotExist:
+        return HttpResponseNotFound("Match not found.")
+    following_ids=Follow.objects.filter(follower=request.user).values_list('following__id',flat=True)
+    posts=Post.objects.filter(game_id=game_id,user__id__in=following_ids).order_by('-created_at')
+    users=User.objects.order_by("?")[0:3]
+    selected_date=request.GET.get("match_date")
+    if selected_date:
+        try:
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = timezone.now().date()
+    else:
+        selected_date = timezone.now().date()
+
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
+    
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        "is_selected": (day == selected_date),  
+        "day_name": day.strftime("%a")           
+    }
+        days_list.append(day_dict)
+    matches = Match.objects.filter(date=selected_date).order_by("time")
+    if request.user.is_authenticated:
+        posts=is_bookmarked(posts,request.user)
+        posts=is_liked(posts,request.user)
+        posts=is_reposted(posts,request.user)
+
+    return render(request,"posts/game_post_following.html",{"match":match,"posts":posts,"game_post":True,"users":users,"matches":matches,"days_list":days_list,"selected_date":selected_date})

@@ -5,8 +5,8 @@ Page Title
 {% block content %}
 <div class="flex w-full flex-col  mx-0 ">
     <div class="flex justify-evenly p-2 w-full ">
-        <a class="underline border-r border-gray-600 hover:bg-gray-600 " href="{%url 'posts:home_view'%}">Genreal</a>
-        <a class="hover:bg-gray-600" href="{%url 'posts:home_following_view'%}">following</a>
+        <a class=" border-r border-gray-600 hover:bg-gray-600 " href="{%url 'posts:home_view'%}">Genreal</a>
+        <a class="underline hover:bg-gray-600" href="{%url 'posts:home_following_view'%}">following</a>
 
     </div>
     {% if request.user.is_authenticated %}

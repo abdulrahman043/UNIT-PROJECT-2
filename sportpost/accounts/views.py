@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
-from .models import Profile,Bookmark,Like,Notification
+from .models import Profile,Bookmark,Like,Notification,Follow
 from matches.models import Match
 from django.http import HttpRequest,HttpResponse
 from django.utils import timezone
@@ -14,7 +14,6 @@ from posts.models import Post
 def create_account_view(request:HttpRequest):
     if request.method=="POST":
         try:
-            print(request.POST)
             user = User.objects.create_user(username=request.POST["username"], email=request.POST["email"], password=request.POST["password"])
             user.save()
             Profile.objects.create(user=user,name=request.POST["name"])
@@ -44,7 +43,8 @@ def profile_replys_view(request:HttpRequest,username):
     
     user=User.objects.get(username=username)
     profile=user.profile
-    
+    follow=Follow.objects.filter(follower=request.user,following__username=username).exists()
+
     posts = Post.objects.filter(user=user, parent_post__isnull=False).order_by("-created_at")
     if request.user.is_authenticated:
         posts=is_bookmarked(posts,request.user)
@@ -70,14 +70,14 @@ def profile_replys_view(request:HttpRequest,username):
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
-    return render(request,"accounts/profile_reply.html",{"posts":posts,"matches":matches,"profile_replys_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
+    return render(request,"accounts/profile_reply.html",{"posts":posts,"is_following":follow,"matches":matches,"profile_replys_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
 def profile_posts_view(request:HttpRequest,username):
     now = datetime.datetime.now()
     today = now.strftime("%Y-%m-%d")
     yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     user=User.objects.get(username=username)
     profile=user.profile
-    
+    follow=Follow.objects.filter(follower=request.user,following__username=username).exists()
     posts = Post.objects.filter(user=user, parent_post__isnull=True).order_by("-created_at")
     if request.user.is_authenticated:
         posts=is_bookmarked(posts,request.user)
@@ -103,12 +103,14 @@ def profile_posts_view(request:HttpRequest,username):
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
-    return render(request,"accounts/profile_post.html",{"posts":posts,"matches":matches,"profile_post_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
+    return render(request,"accounts/profile_post.html",{"posts":posts,"matches":matches,"profile_post_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users,"is_following":follow})
 def profile_likes_view(request:HttpRequest,username):
     now = datetime.datetime.now()
     
     user=User.objects.get(username=username)
     profile=user.profile
+    follow=Follow.objects.filter(follower=request.user,following__username=username).exists()
+
     posts = Post.objects.filter(like__user=user).order_by("-created_at")
     if request.user.is_authenticated:
         posts=is_bookmarked(posts,request.user)
@@ -134,9 +136,22 @@ def profile_likes_view(request:HttpRequest,username):
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
-    return render(request,"accounts/profile_like.html",{"posts":posts,"matches":matches,"profile_likes_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
+    return render(request,"accounts/profile_like.html",{"posts":posts,"is_following":follow,"matches":matches,"profile_likes_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
 def edit_profile_view(request:HttpRequest):
     return render(request,"accounts/edit_profile.html")
+def add_delate_follow(request:HttpRequest,username):
+    if not request.user.is_authenticated:
+        return redirect("accounts:login")
+    try:
+        follow=Follow.objects.get(follower=request.user,following__username=username)
+        follow.delete()
+    except Follow.DoesNotExist:
+        try:
+            following=User.objects.get(username=username)
+            follow=Follow.objects.get_or_create(follower=request.user,following=following)
+        except:
+            pass
+    return redirect("accounts:profile_view", username)
 def update_profile(request:HttpRequest):
     if request.method=="POST":
         profile = request.user.profile
@@ -275,8 +290,12 @@ def add_repost(request: HttpRequest, post_id):
                 action = "removed"
             else:
                 try:
-                    Post.objects.create(user=request.user, repost_of=target_post, content="")
-                    action = "added"
+                    if target_post.game:
+                        Post.objects.create(user=request.user, repost_of=target_post, content="",game=target_post.game)
+                        action = "added"
+                    else:
+                        Post.objects.create(user=request.user, repost_of=target_post, content="")
+                        action = "added"
                 except IntegrityError:
                     return HttpResponse("Repost failed due to duplicate.", status=400)
         
@@ -299,6 +318,7 @@ def add_repost(request: HttpRequest, post_id):
     return redirect('posts:home_view')
 def search_user_view(request:HttpRequest):
     query=request.GET.get("q")
+
     if query:
         users=User.objects.filter(username__contains=query)
     else:
@@ -326,3 +346,64 @@ def search_user_view(request:HttpRequest):
         
     
     return render(request,"accounts/search_user.html",{"users":users,"matches":matches,"days_list":days_list,"selected_date":selected_date,"query":query,"in_search":True})
+def user_following_view(request:HttpRequest,username):
+    user=User.objects.get(username=username)
+    profile=user.profile
+
+    following = Follow.objects.filter(follower=user).values_list('following', flat=True)
+    users=User.objects.filter(id__in=following)
+    
+
+    selected_date=request.GET.get("match_date")
+    if selected_date:
+        try:
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = timezone.now().date()
+    else:
+        selected_date = timezone.now().date()
+
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
+    
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        "is_selected": (day == selected_date),  
+        "day_name": day.strftime("%a")           
+    }
+        days_list.append(day_dict)
+    matches = Match.objects.filter(date=selected_date).order_by("time")
+    return render(request,"accounts/user_following.html",{"users":users,"profile":profile,"matches":matches,"days_list":days_list,"selected_date":selected_date,"in_follow":True})
+def user_followers_view(request:HttpRequest,username):
+    user=User.objects.get(username=username)
+    profile=user.profile
+
+    following = Follow.objects.filter(following=user).values_list('follower', flat=True)
+    users=User.objects.filter(id__in=following)
+    
+
+    selected_date=request.GET.get("match_date")
+    if selected_date:
+        try:
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            selected_date = timezone.now().date()
+    else:
+        selected_date = timezone.now().date()
+
+    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
+    
+    days_list=[]
+    for day in order_matches:
+        day_dict = {
+        "date": day,
+        "is_selected": (day == selected_date),  
+        "day_name": day.strftime("%a")           
+    }
+        days_list.append(day_dict)
+    matches = Match.objects.filter(date=selected_date).order_by("time")
+    return render(request,"accounts/user_following.html",{"users":users,"profile":profile,"matches":matches,"days_list":days_list,"selected_date":selected_date,"in_follow":True})
+
+        
+        

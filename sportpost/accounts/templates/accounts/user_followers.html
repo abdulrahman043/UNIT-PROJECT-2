@@ -1,0 +1,55 @@
+{% extends 'posts/base.html' %}
+{% block title %}
+Page Title
+{% endblock %}
+{% block content %}
+<div>
+    <div class="flex flex-row gap-5 items-center ml-1 p-2 ">
+        <a href="{%url 'accounts:profile_view' profile.user.username%}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+        </a>
+        <div class="flex flex-col text-left">
+            <h1>{{profile.name}}</h1>
+            <h1 class="text-gray-600">@{{profile.user.username}}</h1>
+
+
+        </div>
+    </div>
+</div>
+  <div class="p-4 flex flex-col gap-6">
+
+  {%for user in users%}
+  <a href="{%url 'accounts:profile_view' user.username %}">
+      <div class="card flex flex-row gap-4 ">
+
+          <div><img class="h-12 w-12 rounded-full object-cover" src="{{ user.profile.profile_image.url }}"
+                  alt="{{ user.username }}'s profile image" />
+          </div>
+          <div class="flex flex-col text-left">
+              <h4>{{ user.profile.name }}</h4>
+              <h2 class="text-gray-400">@{{ user.username }}</h2>
+              <p>{{ user.profile.bio }}</p>
+              {%if not is_following%}
+              <div class="flex items-center">
+                <a  href="{% url 'accounts:add_delate_follow' profile.user.username %}" class="bg-white text-black font-bold rounded-xl border-2 border-gray-700  p-2 h-10 hover:bg-gray-300">
+                    Follow
+                  </a>        </div>
+                  {%else%}
+                  <div class="flex items-center">
+                    <a href="{% url 'accounts:add_delate_follow' profile.user.username %}" class="bg-black text-white font-bold rounded-xl border-2 border-gray-700  p-2 h-10 hover:bg-gray-900">
+                        Unfollow
+                      </a>        </div>
+                  {%endif%}
+
+          </div>
+
+      </div>
+  </a>
+  {%empty%}
+  <h1>there is followers</h1>
+  {%endfor%}
+</div>
+
+{% endblock %}
