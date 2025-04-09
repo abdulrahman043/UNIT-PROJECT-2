@@ -4,78 +4,87 @@
   hx-trigger="every 60s"
   hx-swap="innerHTML"
 >
+<div class="relative w-full ">
+<button aria-label="Scroll left" onclick="document.getElementById('matchRow').scrollBy({left:-220,behavior:'smooth'})"
+ class="absolute left-0 bottom-1/2">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+</svg>
+</button>
+<div class="flex p-8">
+<div id="matchRow" class="flex overflow-x-auto no-scrollbar   gap-6 w-full">
+{% for match in matches %}
+<a href="{%url 'posts:game_post_view' match.game_id %}">
+  <div class="flex-shrink-0">
 
+  <div class="card bg-gray-800 min-w-[150px] sm:min-w-[3vw] md:min-w-[14vw] max-h-[20vh] flex-shrink-0 rounded-lg p-2 justify-center items-center relative">
+   
+  {%if match.game_status == "3" or match.game_status == "2" %}
+  <div class="flex flex-col gap-3 w-full">
+    <div class="flex justify-between w-full">
+      <div class="flex gap-2 w-full items-center">
+        <img class="w-6 h-6" src="{{match.home_team.logo.url}}" alt="" >
+        <div class="flex flex-col w-full">
+          <div class="flex items-center justify-between w-full">
+          <h1>{{match.home_score}}</h1>
+          <h1 class="text-lg text-white">{{ match.game_status_text }}</h1>
 
-<div class="flex flex-col gap-4 p-4">
-  
-  <div class="relative w-[75vw] mx-auto px-12">
-    <button
-      id="scroll-left"
-      class="absolute -left-0.5 top-1/2 transform -translate-y-1/2 z-10 bg-gray-800 text-white p-2 rounded "
-    >
-      &larr;
-    </button>
-
-    <div
-      id="matches-container"
-      class="flex space-x-4 overflow-hidden w-full snap-x snap-mandatory scroll-smooth"
-    >
-      {% for match in matches %}
-      <a href="{%url 'posts:game_post_view' match.game_id %}">
-        <div
-          class="card bg-gray-800 rounded-lg shadow p-4 flex-shrink-0 min-w-[200px]
-                 snap-start"
-        >
-          <div class="flex items-center gap-2">
-            <img
-              class="h-5 w-5 rounded-full object-cover"
-              src="{{ match.home_team.logo.url }}"
-              alt="{{ match.home_team.name }} logo"
-            />
-            <span class="text-lg font-semibold text-white">
-              {{ match.home_team.name }}
-            </span>
-            <span class="text-xl font-bold text-white">
-              {{ match.home_score }}
-            </span>
-          </div>
-          <div class="flex items-center gap-2">
-            <img
-              class="h-5 w-5 rounded-full object-cover"
-              src="{{ match.away_team.logo.url }}"
-              alt="{{ match.away_team.name }} logo"
-            />
-            <span class="text-lg font-semibold text-white">
-              {{ match.away_team.name }}
-            </span>
-            <span class="text-xl font-bold text-white">
-              {{ match.away_score }}
-            </span>
-          </div>
         </div>
-      </a>
-      {% endfor %}
+      <h1 class="text-sm text-gray-500">{{match.home_team}}</h1>
+   
+  </div>
+</div>
+    </div>
+    <div class="flex justify-between">
+      <div class="flex gap-2 justify-center items-center">
+        <img class="w-6 h-6" src="{{match.away_team.logo.url}}" alt="" >
+        <div class="flex flex-col">
+          <h1>{{match.away_score}}</h1>
+
+      <h1 class="text-sm text-gray-500">{{match.away_team}}</h1>
+  </div>
+      </div>
     </div>
 
-    <button
-      id="scroll-right"
-      class="absolute -right-0.5 top-1/2 transform -translate-y-1/2 z-10 bg-gray-800 text-white p-2 rounded"
-    >
-      &rarr;
-    </button>
+  </div>
+  
+    
+
+    
+    {%else%}
+    <div class="flex flex-col gap-3">
+      <div class="flex justify-between ">
+        <div class="flex gap-2 justify-center items-center">
+          <img class="w-5 h-5" src="{{match.home_team.logo.url}}" alt="" >
+        <h1>{{match.home_team}}</h1>
+          <div class="flex justify-end">
+        <p class="text-gray-400">{{match.time|time:"gA"}}</p></div>
+      </div>
+  
+      </div>
+      <div class="flex justify-between">
+        <div class="flex gap-2 justify-center items-centerr">
+          <img class="w-5 h-5" src="{{match.away_team.logo.url}}" alt="" >
+        <h1>{{match.away_team}}</h1>
+        
+      </div>
+  
+      </div>
+    
+  
+    </div>
+    {%endif%}
   </div>
 </div>
 
-<script>
-  
-  const container = document.getElementById('matches-container');
-  const scrollAmount = 220; 
-
-  document.getElementById('scroll-right').addEventListener('click', () => {
-    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-  });
-  document.getElementById('scroll-left').addEventListener('click', () => {
-    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-  });
-</script>
+</a>
+{% endfor %}
+</div>
+</div>
+<button onclick="document.getElementById('matchRow').scrollBy({left:220,behavior:'smooth'})"
+ class="absolute right-0 bottom-1/2">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+  </svg></button>
+</div>
 </div>

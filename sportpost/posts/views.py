@@ -7,6 +7,7 @@ from matches.models import Match
 from django.utils import timezone
 import datetime
 from accounts.models import Bookmark,Like,Follow
+from django.db.models import Q
 
 from django.db.models import Exists, OuterRef
 
@@ -68,7 +69,7 @@ def home_following_view(request:HttpRequest):
     matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
     following_ids=Follow.objects.filter(follower=request.user).values_list('following__id',flat=True)
-    posts=Post.objects.filter(user__id__in=following_ids).order_by('-created_at')
+    posts=Post.objects.filter(Q(user__id__in=following_ids)|Q(user__id=request.user.id)).order_by('-created_at')
     
     if request.user.is_authenticated:
         posts=is_bookmarked(posts,request.user)
@@ -265,7 +266,7 @@ def game_post_following_view(request:HttpRequest,game_id):
     except Match.DoesNotExist:
         return HttpResponseNotFound("Match not found.")
     following_ids=Follow.objects.filter(follower=request.user).values_list('following__id',flat=True)
-    posts=Post.objects.filter(game_id=game_id,user__id__in=following_ids).order_by('-created_at')
+    posts=Post.objects.filter((Q(game_id=game_id) & Q(user__id__in=following_ids ))| (Q(user__id=request.user.id)&Q(game_id=game_id))).order_by('-created_at')
     users=User.objects.order_by("?")[0:3]
     selected_date=request.GET.get("match_date")
     if selected_date:

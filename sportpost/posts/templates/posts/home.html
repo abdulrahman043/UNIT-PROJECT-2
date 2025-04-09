@@ -4,10 +4,9 @@ Page Title
 {% endblock %}
 {% block content %}
 <div class="flex w-full flex-col  mx-0 ">
-    <div class="flex justify-evenly p-2 w-full ">
-        <a class="underline border-r border-gray-600 hover:bg-gray-600 " href="{%url 'posts:home_view'%}">Genreal</a>
-        <a class="hover:bg-gray-600" href="{%url 'posts:home_following_view'%}">following</a>
-
+    <div class="flex justify-evenly w-full">
+        <a class=" underline w-full border-r border-gray-700 hover:bg-gray-900 p-5" href="{% url 'posts:home_view' %}">General</a>
+        <a class=" w-full hover:bg-gray-900 p-5" href="{% url 'posts:home_following_view' %}">Following</a>
     </div>
     {% if request.user.is_authenticated %}
     <form class="w-full " method="POST" action="{% url 'posts:add_post' %}" enctype="multipart/form-data">
@@ -24,7 +23,7 @@ Page Title
                 <div class="flex ps-0 space-x-1 rtl:space-x-reverse sm:ps-2 ">
                     
                     <div class="flex justify-center items-center p-0 m-0">
-                    <input class="w-30 file:border file:rounded-xl hover:file:bg-gray-200 file:text-sm file:border-gray-200" type="file" name="image" id="imageUpload" accept="image/*">
+                    <input class="w-30 file:border file:rounded-xl hover:file:bg-gray-200 file:text-sm  file:border-gray-200" type="file" name="image" id="imageUpload" accept="image/*">
                 </div>
                     <button type="submit"
                         class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
@@ -45,9 +44,9 @@ Page Title
           {%include 'posts/post.html'%}
         </div>
         {%empty%}
-        <div class="text-center text-3xl">
-        <h1>no post</h1>
-        </div>
+        <div class="text-center text-3xl  min-h-[30vh]">
+            <h1>No posts yet</h1>
+                </div>
         {%endfor%}
 
     </div>

@@ -71,8 +71,9 @@ Page Title
         {%include 'posts/post.html'%}
     </div>
     {%empty%}
-    <h1 class="text-center text-2xl mt-4">No Posts here</h1>
-    {%endfor%}
+    <div class="min-h-[30vh]">
+        <h1 class="text-center text-2xl mt-6 ">No Posts Yet</h1>
+    </div>    {%endfor%}
 
 </div>
 

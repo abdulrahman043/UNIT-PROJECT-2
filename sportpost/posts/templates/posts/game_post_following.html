@@ -3,7 +3,8 @@
 Page Title
 {% endblock %}
 {% block content %}
-<div class="flex w-full flex-row gap-3 justify-center items-center p-4">
+<div class="flex flex-col gap-0 p-4">
+<div class="flex w-full flex-row gap-3 justify-center items-center ">
     <div class="flex items-center gap-2">
         <img
           class="h-15 w-10 rounded-full object-cover"
@@ -32,12 +33,17 @@ Page Title
    
        
       </div>
+      
     </div>
-    <div class="flex justify-evenly p-2 w-full border border-gray-600 ">
-      <a class=" border-r border-gray-600 hover:bg-gray-600 " href="{%url 'posts:game_post_view'  match.game_id%}">Genreal</a>
-      <a class="underline hover:bg-gray-600" href="{%url 'posts:game_post_following_view'  match.game_id%}">Following</a>
-
+    <div>
+    </div>
+    <p class="m-0 p-0">{{match.date|date:"d/m/Y"}}</p>
   </div>
+  <div class="flex justify-evenly w-full  border border-gray-700">
+    <a class=" w-full border-r border-gray-700 hover:bg-gray-900 p-5" href="{%url 'posts:game_post_view' match.game_id%}">Genreal</a>
+    <a class="underline w-full  border-gray-700 hover:bg-gray-900 p-5" href="{%url 'posts:game_post_following_view' match.game_id%}">following</a>
+
+</div>
         {% if request.user.is_authenticated %}
     
     <form class="w-full " method="POST" action="{% url 'posts:add_post' %}?id={{match.game_id}}">
@@ -98,9 +104,9 @@ Page Title
           {%include 'posts/post.html'%}
         </div>
         {%empty%}
-        <div class="text-center text-3xl">
-        <h1>no post</h1>
-        </div>
+        <div class="text-center text-3xl  min-h-[30vh]">
+          <h1>No posts yet</h1>
+              </div>
         {%endfor%}
 
     </div>

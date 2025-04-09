@@ -4,11 +4,12 @@ Page Title
 {% endblock %}
 {% block content %}
 <div class="flex w-full flex-col  mx-0 ">
-    <div class="flex justify-evenly p-2 w-full ">
-        <a class=" border-r border-gray-600 hover:bg-gray-600 " href="{%url 'posts:home_view'%}">Genreal</a>
-        <a class="underline hover:bg-gray-600" href="{%url 'posts:home_following_view'%}">following</a>
-
+    <div class="flex justify-evenly w-full">
+        <a class="w-full border-r border-gray-700 hover:bg-gray-900 p-5" href="{% url 'posts:home_view' %}">General</a>
+        <a class="underline w-full hover:bg-gray-900 p-5" href="{% url 'posts:home_following_view' %}">Following</a>
     </div>
+    
+    
     {% if request.user.is_authenticated %}
     <form class="w-full " method="POST" action="{% url 'posts:add_post' %}" enctype="multipart/form-data">
         {%csrf_token%}
@@ -45,9 +46,9 @@ Page Title
           {%include 'posts/post.html'%}
         </div>
         {%empty%}
-        <div class="text-center text-3xl">
-        <h1>no post</h1>
-        </div>
+       <div class="text-center text-3xl  min-h-[30vh]">
+            <h1>No posts yet</h1>
+                </div>
         {%endfor%}
 
     </div>

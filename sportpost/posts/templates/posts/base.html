@@ -17,29 +17,50 @@
 
 </head>
 
-<body class="bg-black   text-white md:mx-20 lg:mx-35">
+<body class="bg-black    text-white ">
 
   <div class="flex flex-col ">
-    
-    <div class="overflow-x-auto">
-      <div class="flex gap-10">
-        {%for day in days_list%}
-        <button hx-get="{% url 'matches:live_score_view' %}?match_date={{ day.date|date:'Y-m-d'}}" hx-target="#matches"
-          hx-swap="innerHTML">
-          <span class="text-white">{{day.date|date:"b"|upper}}</span>
-          <span class="text-white">{{day.date|date:"D"}}</span>
-          <span class="text-white">{{day.date|date:"d"}}</span>
-        </button>
-        {%endfor%}
+
+    <div class="relative w-full px=2">
+      <button onclick="document.getElementById('scrollRow').scrollBy({left:-220,behavior:'smooth'})"
+        class="absolute  left-0 top-1/2 -translate-y-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+        </svg>
+
+      </button>
+      <div class="flex gap-10 px-8">
+        <div id="scrollRow" class="flex overflow-x-auto no-scrollbar gap-10 px-8 py-5">
+          {%for day in days_list%}
+          <button hx-get="{% url 'matches:live_score_view' %}?match_date={{ day.date|date:'Y-m-d'}}"
+            hx-target="#matches" hx-swap="innerHTML">
+            <span class="text-white">{{day.date|date:"b"|upper}}</span>
+            <span class="text-white">{{day.date|date:"D"}}</span>
+            <span class="text-white">{{day.date|date:"d"}}</span>
+          </button>
+          {%endfor%}
+        </div>
       </div>
+      <button onclick="document.getElementById('scrollRow').scrollBy({left:225,behavior:'smooth'})"
+        class="absolute z-10 right-0 top-1/2 -translate-y-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+        </svg>
+
+
+      </button>
+
+
     </div>
-  
+
     <div id="matches">
 
       {% include 'matches/live_score.html' %}
 
     </div>
-   
+
   </div>
   <section class="grid grid-cols-12 gap-3  bg-black text-white p-4 w-full  overflow-y-auto my-4  ">
     <div class="sm:col-span-2 text-xl text-left">
@@ -52,7 +73,7 @@
           </svg>
           <h2 class="hidden sm:block">Home </h2>
         </a>
-        <a class="flex gap-2 "  href="{%url 'posts:search_view' %}">
+        <a class="flex gap-2 " href="{%url 'posts:search_view' %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -63,13 +84,15 @@
         </a>
         {% if request.user.is_authenticated%}
         <a class="flex gap-2 " href="{%url 'accounts:notification_view' %}">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
           </svg>
-          
+
           <h2 class="hidden sm:block">Notifications</h2>
         </a>
-        
+
         <a class="flex gap-2 " href="{%url 'accounts:bookmark_view' %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
@@ -79,7 +102,7 @@
 
           <h2 class="hidden sm:block">Bookmarks </h2>
         </a>
-      
+
 
         <a class="flex gap-2 " href="{%url 'accounts:profile_view' request.user.username %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -123,25 +146,30 @@
     </div>
     <div class="hidden sm:block col-span-3">
       {%if not in_search%}
-      <form class="max-w-sm mx-auto" action="{%url 'posts:search_view'%}"  method="get">
+      <form class="max-w-sm mx-auto" action="{%url 'posts:search_view'%}" method="get">
         <div class="flex">
-          <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-black border border-e-0 border-gray-300 rounded-s-md dark:bg-black dark:text-gray-400 dark:border-gray-600">
-           <button> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg></button>
-            
+          <span
+            class="inline-flex items-center px-3 text-sm text-gray-900 bg-black border border-e-0 border-gray-300 rounded-s-md dark:bg-black dark:text-gray-400 dark:border-gray-600">
+            <button> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+              </svg></button>
+
           </span>
-          <input  type="text" name="q" id="search" class="rounded-none rounded-e-lg bg-black border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search">
+          <input type="text" name="q" id="search"
+            class="rounded-none rounded-e-lg bg-black border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Search">
         </div>
       </form>
       <div class="border-2  border-gray-700 mt-4">
         <div class="px-4 py-3 flex flex-col gap-5 ">
-      
+
           <h3 class="text-left text-3xl">Who to follow</h3>
           {%for user in users%}
           <a href="{%url 'accounts:profile_view' user.username %}">
             <div class="card flex flex-row gap-4 ">
-      
+
               <div><img class="h-12 w-12 rounded-full object-cover" src="{{ user.profile.profile_image.url }}"
                   alt="{{ user.username }}'s profile image" />
               </div>
@@ -149,10 +177,10 @@
                 <h4>{{ user.profile.name }}</h4>
                 <h2 class="text-gray-400">@{{ user.username }}</h2>
                 <p>{{ user.profile.bio }}</p>
-      
-      
+
+
               </div>
-      
+
             </div>
           </a>
           {%endfor%}
@@ -164,45 +192,7 @@
     </div>
   </section>
 
-  <script>
-  
-    let oldScrollLeft = 0;
 
-document.addEventListener('htmx:beforeSwap', function(evt) {
-  if (evt.target.id === 'matches') {
-    const container = document.getElementById('matches-container');
-    if (container) {
-      oldScrollLeft = container.scrollLeft;
-    }
-  }
-});
-
-document.addEventListener('htmx:afterSwap', function(evt) {
-  if (evt.target.id === 'matches') {
-    const container = document.getElementById('matches-container');
-    const btnLeft = document.getElementById('scroll-left');
-    const btnRight = document.getElementById('scroll-right');
-    const scrollAmount = 220;
-
-    // Reattach arrow events
-    if (container && btnLeft && btnRight) {
-      btnLeft.addEventListener('click', () => {
-        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-      });
-      btnRight.addEventListener('click', () => {
-        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-      });
-    }
-
-    if (container) {
-      const oldBehavior = container.style.scrollBehavior;
-      container.style.scrollBehavior = 'auto'; 
-      container.scrollLeft = oldScrollLeft;     
-      container.style.scrollBehavior = oldBehavior; 
-    }
-  }
-});
-  </script>
 </body>
 
 </html>

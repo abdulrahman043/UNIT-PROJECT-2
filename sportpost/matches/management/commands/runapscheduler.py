@@ -12,6 +12,7 @@ from nba_api.live.nba.endpoints import scoreboard
 from datetime import datetime
 from matches.models import Team,Match
 
+from zoneinfo import ZoneInfo
 
 
 logger = logging.getLogger(__name__)
@@ -43,12 +44,16 @@ def my_job():
       home_score=game.get("homeTeam").get("score")
       away_score=game.get("awayTeam").get("score")
       game_time_utc=game.get("gameTimeUTC")
+      
       game_time_utc_fixed = game_time_utc.replace("Z", "+00:00")
       dt_utc = datetime.fromisoformat(game_time_utc_fixed)
+      dt_utc = dt_utc.astimezone(ZoneInfo("Asia/Riyadh"))
       date=dt_utc.date()
       time=dt_utc.time()
       game_clock=game.get("gameClock")
-      game_status=game.get("gameStatusText")
+      game_status=game.get("gameStatus")
+      game_status_text=game.get("gameStatusText")
+
       home_team,_=Team.objects.get_or_create(name=home_team_name,team_id=team_id_home,short_name=short_name_home,logo=home_team_logo)
       away_team,_=Team.objects.get_or_create(name=away_team_name,team_id=team_id_away,short_name=short_name_away,logo=away_team_logo)
       Match.objects.update_or_create(
@@ -62,7 +67,7 @@ def my_job():
           "time":time,
           "game_clock":game_clock,
           "game_status":game_status,
-
+          "game_status_text":game_status_text
 
         }
       )
@@ -94,7 +99,7 @@ class Command(BaseCommand):
 
     scheduler.add_job(
       my_job,
-      trigger=CronTrigger(second="*/59"),  # Every 10 seconds
+      trigger=CronTrigger(second="*/30"),  # Every 10 seconds
       id="my_job",  # The `id` assigned to each job MUST be unique
       max_instances=1,
       replace_existing=True,

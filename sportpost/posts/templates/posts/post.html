@@ -79,9 +79,9 @@
               <a href="{%url 'accounts:profile_view' post.user.username %}"> <h4>@{{post.user.username}}</h4></a>
             </div>
             {%if post.game %}
-            <p class="text-gray-600">{{post.game}}</p>
+            <p class="text-gray-600 text-left">{{post.game}}</p>
             {%else%}
-            <p class="text-gray-600">Genreal</p>
+            <p class="text-gray-600 text-left">Genreal</p>
 
             {%endif%}
               {%if post.parent_post %}
