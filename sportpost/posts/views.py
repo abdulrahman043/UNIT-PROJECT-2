@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from matches.models import Match
 from django.utils import timezone
 import datetime
-from accounts.models import Bookmark,Like,Follow
+from accounts.models import Bookmark,Like,Follow,Notification
 from django.db.models import Q
 
 from django.db.models import Exists, OuterRef
@@ -36,6 +36,10 @@ def home_view(request:HttpRequest):
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
+    try:
+        unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
+    except:
+        unread_count=None
 
     posts=Post.objects.all().order_by('-created_at')
     if request.user.is_authenticated:
@@ -43,7 +47,7 @@ def home_view(request:HttpRequest):
         posts=is_liked(posts,request.user)
         posts=is_reposted(posts,request.user)
 
-    return render(request,"posts/home.html",{"posts":posts,"matches":matches,"days_list":days_list,"selected_date":selected_date,"users":users})
+    return render(request,"posts/home.html",{"posts":posts,"unread_count":unread_count,"matches":matches,"days_list":days_list,"selected_date":selected_date,"users":users})
 def home_following_view(request:HttpRequest):
     if not request.user.is_authenticated:
         return redirect('accounts:login_account_view')

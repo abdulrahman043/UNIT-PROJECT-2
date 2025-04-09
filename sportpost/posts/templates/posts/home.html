@@ -4,7 +4,7 @@ Page Title
 {% endblock %}
 {% block content %}
 <div class="flex w-full flex-col  mx-0 ">
-    <div class="flex justify-evenly w-full">
+    <div class="flex justify-evenly w-full border border-gray-700">
         <a class=" underline w-full border-r border-gray-700 hover:bg-gray-900 p-5" href="{% url 'posts:home_view' %}">General</a>
         <a class=" w-full hover:bg-gray-900 p-5" href="{% url 'posts:home_following_view' %}">Following</a>
     </div>

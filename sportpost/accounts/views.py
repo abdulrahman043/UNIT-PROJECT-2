@@ -198,7 +198,9 @@ def notification_view(request:HttpRequest):
     today = now.strftime("%Y-%m-%d")
     yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time") 
-    notifications = request.user.receiver.all()
+    notifications = Notification.objects.filter(receiver=request.user).order_by("-created_at")
+    notifications.filter(is_read=False).update(is_read=True)
+    
       
     selected_date=request.GET.get("match_date")
     if selected_date:
@@ -230,14 +232,14 @@ def add_bookmark(request:HttpRequest,post_id):
         if bookmark:
             bookmark.delete()
             if request.headers.get("HX-Request"):
-                return HttpResponse('''<svg  id="bookmark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                return HttpResponse('''<svg  id="bookmark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hover:fill-blue-500 ">
         <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
         </svg>''')
             
         else:
             Bookmark.objects.create(user=request.user,post=post)
             if request.headers.get("HX-Request"):
-                return HttpResponse('''<svg  id="bookmark" xmlns="http://www.w3.org/2000/svg" fill="blue" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                return HttpResponse('''<svg  id="bookmark" xmlns="http://www.w3.org/2000/svg" fill="blue" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hover:fill-blue-500">
         <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
         </svg>''')
           
