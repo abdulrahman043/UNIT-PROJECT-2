@@ -1,21 +1,12 @@
 <div
   id="matches"
-  hx-get="{% url 'matches:live_score_view' %}?match_date={{ selected_date|date:'Y-m-d' }}"
+  hx-get="{% url 'matches:score' %}?match_date={{ selected_date|date:'Y-m-d' }}"
   hx-trigger="every 60s"
   hx-swap="innerHTML"
 >
-<div class="relative w-full ">
-<button aria-label="Scroll left" onclick="document.getElementById('matchRow').scrollBy({left:-220,behavior:'smooth'})"
- class="absolute left-0 bottom-1/2">
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-</svg>
-</button>
-<div class="flex p-8">
-<div id="matchRow" class="flex overflow-x-auto no-scrollbar   gap-6 w-full">
-{% for match in matches %}
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+    {% for match in matches %}
 <a href="{%url 'posts:game_post_view' match.game_id %}">
-  <div class="flex-shrink-0">
 
   <div class="card bg-gray-800 min-w-[150px] sm:min-w-[3vw] md:min-w-[14vw] max-h-[20vh] flex-shrink-0 rounded-lg p-2 justify-center items-center relative">
    
@@ -83,16 +74,8 @@
     
     {%endif%}
   </div>
-</div>
 
 </a>
 {% endfor %}
-</div>
-</div>
-<button onclick="document.getElementById('matchRow').scrollBy({left:220,behavior:'smooth'})"
- class="absolute right-0 bottom-1/2">
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-  </svg></button>
 </div>
 </div>

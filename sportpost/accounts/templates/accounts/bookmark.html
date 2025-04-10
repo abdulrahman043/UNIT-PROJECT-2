@@ -5,6 +5,7 @@ Page Title
 {% block content %}
 
 <div class="flex flex-col gap-4 w-full">
+  <div class="border border-gray-700 p-5 text-lg"><p>Bookmarks</p></div>
     {%for bookmark in request.user.bookmark_set.all %}
     <div id="tweet-{{ bookmark.id }}" class="card border-b-2 border-gray-700 p-5 flex gap-5 flex-col ">
       {%with post=bookmark.post%}
@@ -12,7 +13,7 @@ Page Title
       {% endwith %}
     </div>
     {%empty%}
-    <div class="text-center text-xl mt-3">
+    <div class="text-center text-xl mt-3 min-h-[30vh]">
       <h1>You have no bookmarks yet</h1>
     </div>
     {%endfor%}

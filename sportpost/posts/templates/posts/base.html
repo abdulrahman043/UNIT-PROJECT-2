@@ -17,19 +17,19 @@
 
 </head>
 
-<body class="bg-black    text-white lg:mx-20 ">
+<body class="bg-black    text-white  ">
 
   
-  <section class="grid grid-cols-12 gap-3  bg-black text-white p-4 w-full  overflow-y-auto my-4  ">
-    <div class="col-span-1 xl:col-span-2 text-xl text-left">
-      <div class="flex flex-col gap-5 text-left fixed  ">
+  <section class="grid grid-cols-12  [@media(min-width:900px)]:gap-3  bg-black text-white p-4 w-full  overflow-y-auto my-4  ">
+    <div class="col-span-1  [@media(min-width:900px)]:col-span-1 text-xl text-left  [@media(min-width:900px)]:text-end">
+      <div class="flex flex-col gap-5 text-right fixed  ">
         <a class="flex gap-2 " href="{%url 'posts:home_view' %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round"
               d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
           </svg>
-          <h2 class="hidden md:block">Home </h2>
+          <h2 class="hidden [@media(min-width:900px)]:block">Home </h2>
         </a>
         <a class="flex gap-2 " href="{%url 'posts:search_view' %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -38,12 +38,12 @@
               d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
 
-          <h2 class="hidden md:block">Search</h2>
+          <h2 class="hidden [@media(min-width:900px)]:block">Search</h2>
         </a>
         <a class="flex gap-3 items-center" href="{%url 'matches:live_score_basketball_view' %}">
-          <img class="w-5 h-5 " src="{% static 'images/basketball-ball.svg' %}" alt="">
+          <img class="w-6 h-5 " src="{% static 'images/basketball-ball.svg' %}" alt="">
 
-          <h2 class="hidden md:block">live Score</h2>
+          <h2 class="hidden [@media(min-width:900px)]:block">live Score</h2>
         </a>
         {% if request.user.is_authenticated %}
         <div class="relative w-full">
@@ -61,7 +61,7 @@
         </span>
           {%endif%}
 
-          <h2 class="hidden md:block">Notifications</h2>
+          <h2 class="hidden [@media(min-width:900px)]:block">Notifications</h2>
         </a>
         </div>
         
@@ -72,7 +72,7 @@
               d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
           </svg>
 
-          <h2 class="hidden md:block">Bookmarks </h2>
+          <h2 class="hidden [@media(min-width:900px)]:block">Bookmarks </h2>
         </a>
 
 
@@ -83,7 +83,7 @@
               d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
           </svg>
 
-          <h2 class="hidden md:block ">Profile </h2>
+          <h2 class="hidden [@media(min-width:900px)]:block ">Profile </h2>
         </a>
         {% endif %}
 
@@ -98,16 +98,16 @@
           </svg>
 
 
-          <h2 class="hidden md:block">More </h2>
+          <h2 class="hidden [@media(min-width:900px)]:block">More </h2>
         </a>
         <a class="flex gap-2 items-center" href="{%url 'accounts:logout_account' %}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="16" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
             <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
           </svg>
 
 
-          <h2 class="hidden md:block">Logout </h2>
+          <h2 class="hidden [@media(min-width:900px)]:block">Logout </h2>
         </a>
         {% else %}
         <a class="flex gap-3 items-center" href="{%url 'accounts:login_account_view' %}">
@@ -139,7 +139,7 @@
       
     </div>
 
-    <div class="col-span-10 text-center border border-gray-700 sm:col-span-7 text-center border border-gray-700">
+    <div class="col-span-11 text-center border border-gray-700  [@media(min-width:900px)]:col-span-7 text-center border border-gray-700">
       <div class="flex flex-col  ">
 
         <div class="relative w-full px-2 border-b border-gray-700">
@@ -154,7 +154,7 @@
           <div class="flex gap-10 px-8">
             <div id="scrollRow" class="flex overflow-x-auto no-scrollbar gap-10 px-8 py-5">
               {%for day in days_list%}
-              <button hx-get="{% url 'matches:live_score_view' %}?match_date={{ day.date|date:'Y-m-d'}}"
+              <button {%if live_score%} hx-get="{% url 'matches:score' %}?match_date={{ day.date|date:'Y-m-d'}}" {%else%}hx-get="{% url 'matches:live_score_view' %}?match_date={{ day.date|date:'Y-m-d'}}"{%endif%}
                 hx-target="#matches" hx-swap="innerHTML"
                 {% if day.is_selected %} autofocus{% endif %}>
                 <span class="text-white">{{day.date|date:"b"|upper}}</span>
@@ -176,19 +176,26 @@
     
     
         </div>
+        {%if live_score %}
+        <div id="matches">
     
+          {% include 'matches/score.html' %}
+    
+        </div>
+        {%else%}
         <div id="matches">
     
           {% include 'matches/live_score.html' %}
     
         </div>
-    
+    {%endif%}
       </div>
+
       {% block content %}
       
       {% endblock %}
     </div>
-    <div class="hidden sm:block col-span-3">
+    <div class="hidden  [@media(min-width:900px)]:block col-span-3">
       {%if not in_search%}
       <form class="max-w-sm mx-auto" action="{%url 'posts:search_view'%}" method="get">
         <div class="flex">
@@ -209,7 +216,7 @@
       <div class="border-2  border-gray-700 mt-4">
         <div class="px-4 py-3 flex flex-col gap-5 ">
 
-          <h3 class="text-left text-3xl">Who to follow</h3>
+          <h3 class="text-left text-m  [@media(min-width:1000px)]:text-3xl ">Who to follow</h3>
           {%for user in users%}
           <a href="{%url 'accounts:profile_view' user.username %}">
             <div class="card flex flex-row gap-4 ">
