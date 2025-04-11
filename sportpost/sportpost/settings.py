@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-from decouple import config as env_config
 from zoneinfo import ZoneInfo
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -56,6 +55,7 @@ INSTALLED_APPS = [
 ]
 try:
     from decouple import config
+
 except ImportError:
     import os
     config = os.environ.get
@@ -76,6 +76,7 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+print(config("CLOUDFLARE_R2_BUCKET_ENDPOINT"))
 endpoint = config("CLOUDFLARE_R2_BUCKET_ENDPOINT").split("//")[1]
 MEDIA_URL = f'https://{CLOUDFLARE_R2_CONFIG_OPTIONS["bucket_name"]}.{endpoint}/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -121,7 +121,7 @@
           </svg>
 
 
-          <h2 class="hidden md:block">Login </h2>
+          <h2 class="hidden [@media(min-width:900px)]:block">Login </h2>
         </a>
         <a class="flex gap-2 items-center " href="{%url 'accounts:create_account_view' %}">
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" fill="currentColor" class="bi bi-r-circle" viewBox="0 0 16 16">
@@ -129,7 +129,7 @@
           </svg>
 
 
-          <h2 class="hidden md:block">Sign Up </h2>
+          <h2 class="hidden [@media(min-width:900px)]:block">Sign Up </h2>
         </a>
     
        
@@ -203,8 +203,8 @@
     </div>
     <div class="hidden  [@media(min-width:900px)]:block col-span-3">
       {%if not in_search%}
-      <form class="max-w-sm mx-auto" action="{%url 'posts:search_view'%}" method="get">
-        <div class="flex">
+      <form class=" mx-auto " action="{%url 'posts:search_view'%}" method="get">
+        <div class="flex ">
           <span
             class="inline-flex items-center px-3 text-sm text-gray-900 bg-black border border-e-0 border-gray-300 rounded-s-md dark:bg-black dark:text-gray-400 dark:border-gray-600">
             <button> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
