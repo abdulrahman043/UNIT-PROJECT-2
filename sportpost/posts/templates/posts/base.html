@@ -17,12 +17,16 @@
 
 </head>
 
-<body class="bg-black    text-white  ">
+<body  class="bg-black    text-white  " hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
   
   <section class="grid grid-cols-12  [@media(min-width:900px)]:gap-3  bg-black text-white p-4 w-full  overflow-y-auto my-4  ">
-    <div class="col-span-1  [@media(min-width:900px)]:col-span-1 text-xl text-left  [@media(min-width:900px)]:text-end">
+    <div class="col-span-1  [@media(min-width:900px)]:col-span-2 text-xl text-left  [@media(min-width:900px)]:text-end">
       <div class="flex flex-col gap-5 text-right fixed  ">
+        <a class="flex gap-2 items-center " href="{%url 'posts:home_view' %}">
+          <img class="h-5 w-6" src="{%static 'images/logo.svg'%}" alt="">
+          <h2 class="hidden [@media(min-width:900px)]:block">SportPost </h2>
+        </a>
         <a class="flex gap-2 " href="{%url 'posts:home_view' %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
@@ -40,7 +44,7 @@
 
           <h2 class="hidden [@media(min-width:900px)]:block">Search</h2>
         </a>
-        <a class="flex gap-3 items-center" href="{%url 'matches:live_score_basketball_view' %}">
+        <a class="flex gap-2 items-center" href="{%url 'matches:live_score_basketball_view' %}">
           <img class="w-6 h-5 " src="{% static 'images/basketball-ball.svg' %}" alt="">
 
           <h2 class="hidden [@media(min-width:900px)]:block">live Score</h2>
@@ -101,7 +105,7 @@
           <h2 class="hidden [@media(min-width:900px)]:block">More </h2>
         </a>
         <a class="flex gap-2 items-center" href="{%url 'accounts:logout_account' %}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="16" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="22" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
             <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
           </svg>
@@ -111,7 +115,7 @@
         </a>
         {% else %}
         <a class="flex gap-3 items-center" href="{%url 'accounts:login_account_view' %}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="20" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0z"/>
             <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
           </svg>
@@ -119,8 +123,8 @@
 
           <h2 class="hidden md:block">Login </h2>
         </a>
-        <a class="flex gap-3 items-center justify-between " href="{%url 'accounts:create_account_view' %}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-r-circle" viewBox="0 0 16 16">
+        <a class="flex gap-2 items-center " href="{%url 'accounts:create_account_view' %}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" fill="currentColor" class="bi bi-r-circle" viewBox="0 0 16 16">
             <path d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.5 4.002h3.11c1.71 0 2.741.973 2.741 2.46 0 1.138-.667 1.94-1.495 2.24L11.5 12H9.98L8.52 8.924H6.836V12H5.5zm1.335 1.09v2.777h1.549c.995 0 1.573-.463 1.573-1.36 0-.913-.596-1.417-1.537-1.417z"/>
           </svg>
 
@@ -139,7 +143,9 @@
       
     </div>
 
+    
     <div class="col-span-11 text-center border border-gray-700  [@media(min-width:900px)]:col-span-7 text-center border border-gray-700">
+     {%if with_score%}
       <div class="flex flex-col  ">
 
         <div class="relative w-full px-2 border-b border-gray-700">
@@ -190,7 +196,7 @@
         </div>
     {%endif%}
       </div>
-
+      {%endif%}
       {% block content %}
       
       {% endblock %}

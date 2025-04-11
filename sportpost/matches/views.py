@@ -3,7 +3,7 @@ from .models import Match
 from django.utils import timezone
 import datetime
 from django.http import HttpRequest,HttpResponse
-
+from accounts.models import Notification
 # Create your views here.
 def live_score_view(request:HttpRequest):
     selected_date=request.GET.get("match_date")
@@ -18,7 +18,7 @@ def live_score_view(request:HttpRequest):
         selected_date = timezone.now().date()
     matches = Match.objects.filter(date=selected_date).order_by("time")
     
-    return render(request, "matches/live_score.html", {"matches": matches,"selected_date":selected_date})
+    return render(request, "matches/live_score.html", {"matches": matches,"selected_date":selected_date ,'with_score':True})
 def live_score_basketball_view(request:HttpRequest):
     
     selected_date=request.GET.get("match_date")
@@ -42,8 +42,12 @@ def live_score_basketball_view(request:HttpRequest):
     }
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
+    try:
+        unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
+    except:
+        unread_count=None
     
-    return render(request, "matches/live_score_basketball.html", {"matches": matches,"selected_date":selected_date,"days_list":days_list,"live_score":True})
+    return render(request, "matches/live_score_basketball.html", {"matches": matches,"unread_count":unread_count,"selected_date":selected_date,'with_score':True,"days_list":days_list,"live_score":True})
 def score(request:HttpRequest):
     selected_date=request.GET.get("match_date")
     if selected_date:
@@ -57,4 +61,4 @@ def score(request:HttpRequest):
         selected_date = timezone.now().date()
     matches = Match.objects.filter(date=selected_date).order_by("time")
     
-    return render(request, "matches/score.html", {"matches": matches,"selected_date":selected_date})
+    return render(request, "matches/score.html", {"matches": matches,"selected_date":selected_date,'with_score':True})

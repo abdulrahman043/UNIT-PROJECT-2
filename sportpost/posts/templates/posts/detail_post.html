@@ -1,6 +1,6 @@
 {% extends 'posts/base.html' %}
 {% block title %}
-Page Title
+{{post.user.profile.name}} on SportPost {{post.content}}
 {% endblock %}
 {% block content %}
 <div class="flex flex-col gap-4 w-full">

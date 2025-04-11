@@ -1,74 +1,91 @@
 <div class="flex justify-between">
-  
+
     <div class="flex gap-3">
       {% if post.repost_of %}
-       
-      
+      <p>dwq</p>
+
       {% if not profile_view %}
-      <div class="flex flex-col gap-4">
-        <div class="flex items-center gap-3 ">
-        <svg style="color: gray;" id="repost-{{post.id}}"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
-        </svg>
-        <a  class="text-sm text-gray-600 hover:underline " href="{%url 'accounts:profile_view' post.user.username %}">{{post.user.username}} Reposted</a>
-      </div>
-      <div class="flex gap-3">
+
+      <!--<a  class="text-sm text-gray-600 hover:underline " href="{%url 'accounts:profile_view' post.user.username %}">{{post.user.username}} Reposted</a>
+    -->
+
       <a href="{%url 'accounts:profile_view' post.repost_of.user.username %}"><img class="h-12 w-12 rounded-full object-cover" src="{{ post.repost_of.user.profile.profile_image.url }}"
-        
-          alt="{{ post.repost_of.user.username }}'s profile image" /></a>
           
-          <a href="{%url 'accounts:profile_view' post.repost_of.user.username %}"><h4>{{post.repost_of.user.profile.name}}</h4></a>
-            <a href="{%url 'accounts:profile_view' post.repost_of.user.username %}"> <h4>@{{post.repost_of.user.username}}</h4></a>
-          </div>
+        alt="{{ post.repost_of.user.username }}'s profile image" /></a>
+        <div class="flex flex-col">
+          <div class="flex gap-2">
+        <a href="{%url 'accounts:profile_view' post.repost_of.user.username %}"><h4>{{post.repost_of.user.profile.name}}</h4></a>
+          <a href="{%url 'accounts:profile_view' post.repost_of.user.username %}"> <h4>@{{post.repost_of.user.username}}</h4></a>
         </div>
-            {% else %}
-      <div class="flex flex-col gap-3">
-        <div class="flex items-center gap-3 ">
-          <svg style="color: gray;" id="repost-{{post.id}}"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
-          </svg>
-          <a  class="text-sm text-gray-600 hover:underline " href="{%url 'accounts:profile_view' post.user.username %}">{{post.user.username}} Reposted</a>
-        </div>
-        <div class="flex gap-2">
-      <img class="h-12 w-12 rounded-full object-cover" src="{{ post.repost_of.user.profile.profile_image.url }}"
-        
-        alt="{{ post.repost_of.user.username }}'s profile image" />
-        <h4>{{post.repost_of.user.profile.name}}</h4>
-         <h4>@{{post.repost_of.user.username}}</h4>  
-        </div> 
-      </div>  
-           {% endif %}
-  </div>
-  <button class="group relative">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round"
-              d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-      </svg>
-      <div
-          class="absolute top-full right-0 rounded-lg p-3 mt-1 shadow-md scale-y-0 group-focus:scale-100 origin-top duration-200">
-          {% if request.user == post.repost_of.user %}
-          <a hx-post="{% url 'posts:delete_post' post.id %}" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-              hx-target="#tweet-{{ post.id }}" hx-swap="outerHTML">
-              delete
-          </a>
+        {%if post.repost_of.game %}
+        <p class="text-gray-600 text-left">{{post.repost_of.game}}</p>
+        {%else%}
+        <p class="text-gray-600 text-left">Genreal</p>
+
+        {%endif%}
+          {%if post.repost_of.parent_post %}
+          <p class="text-gray-600">Replying to <a class="text-blue-600 hover:underline" href="{%url 'accounts:profile_view' post.repost_of.parent_post.user.username %}"> @{{post.repost_of.parent_post.user.username}} </a></p>
           {%endif%}
+        </div>
+    {% else %}
+    
+    <img class="h-12 w-12 rounded-full object-cover" src="{{ post.repost_of.user.profile.profile_image.url }}"
+      
+      alt="{{ post.repost_of.user.username }}'s profile image" />
+      <div class="flex flex-col">
+        <div class="flex gap-2">
+      <h4>{{post.repost_of.user.profile.name}}</h4>
+       <h4>@{{post.repost_of.user.username}}</h4>  
+      </div>  
+
       </div>
-  </button>
+         {% endif %}
+</div>
+<div class="flex justify-start items-start my-0 py-0 gap-6">
+  <p class="text-gray-400">{{post.repost_of.time_since}}</p>
+<button class="group relative">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+        class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round"
+            d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+    </svg>
+    <div
+        class="absolute top-full right-0 rounded-lg p-3 mt-1 shadow-md scale-y-0 group-focus:scale-100 origin-top duration-200">
+        {% if request.user == post.repost_of.user %}
+        <a hx-post="{% url 'posts:delete_post' post.id %}" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-target="#tweet-{{ post.id }}" hx-swap="outerHTML">
+            delete
+        </a>
+        {%endif%}
+    </div>
+</button>
+</div>
 </div>
 <div class="w-full flex flex-col gap-10">
-  {% if not detail_view %}
-    <a href="{% url 'posts:detail_post_view' post.repost_of.id %}">
-      <p {% if post.repost_of.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words" {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>
-        {{ post.repost_of.content }}
-      </p>
-    </a>
-  {% else %}
-  <p  {% if post.repost_of.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words " {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>
+{% if detail_view and post.repost_of.id == id %}
+<p  {% if post.repost_of.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words " {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>
+  {{ post.repost_of.content }}
+  </p>
+{% else %}
+<a href="{% url 'posts:detail_post_view' post.repost_of.id %}">
+  <p {% if post.repost_of.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words" {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>
     {{ post.repost_of.content }}
-    </p>
-  {% endif %}      
+  </p>
+</a>
+
+
+{% endif %}
+  {%if post.repost_of.image%}
+  <a class="w-full" href="{{post.repost_of.image.url}}"><img class="max-h-[80vh] w-full" src="{{post.repost_of.image.url}}" alt=""></a>
+  
+
+  {%endif%}
+  {%if post.repost_of.id == id%}
+
+  <p class="text-left text-gray-600">{{ post.repost_of.created_at|date:"P M j Y" }}</p>
+  {% endif %}
     {%else%}
+    
       {% if not profile_view %}
         <a href="{%url 'accounts:profile_view' post.user.username %}"><img class="h-12 w-12 rounded-full object-cover" src="{{ post.user.profile.profile_image.url }}"
           
@@ -98,9 +115,7 @@
           <h4>{{post.user.profile.name}}</h4>
            <h4>@{{post.user.username}}</h4>  
           </div>  
-           {%if post.parent_post %}
-           <p class="text-gray-600">Replying to <a class="text-blue-600 hover:underline" href="{%url 'accounts:profile_view' post.parent_post.user.username %}"> @{{post.parent_post.user.username}} </a></p>
-           {%endif%}
+
           </div>
              {% endif %}
     </div>
@@ -147,29 +162,32 @@
 
       <p class="text-left text-gray-600">{{ post.created_at|date:"P M j Y" }}</p>
       {% endif %}
-
     {% endif %}
-    <div class="flex justify-evenly">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
-      </svg>
-      
-      <button hx-swap="innerHTML" hx-target="#repost-{{post.id}}"  hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-post="{%url 'accounts:add_repost' post.id %}">
-        <svg id="repost-{{post.id}}"  xmlns="http://www.w3.org/2000/svg" fill="{% if post.is_reposted or is_reposted or request.user.is_authenticated and post.repost_of and post.user == request.user %}green{% else %}none{% endif %}" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hover:fill-green-800">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
+    <div class="flex justify-evenly text-gray-400">
+      {% if detail_view and post.id == id %}
+      <div class="flex gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
         </svg>
-     </button>
-      <button hx-swap="innerHTML" hx-target="#like-{{post.id}}"  hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-post="{%url 'accounts:add_like' post.id %}">
-        <svg  id="like-{{post.id}}"  xmlns="http://www.w3.org/2000/svg" fill="{% if post.is_liked or is_liked %}red{% else %}none{% endif %}" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6  hover:fill-red-800">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-        </svg>
-     </button>
-      
-   <button hx-swap="innerHTML" hx-target="#bookmark-{{post.id}}"  hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-post="{%url 'accounts:add_bookmark' post.id %}">
-     <svg  id="bookmark-{{post.id}}" xmlns="http://www.w3.org/2000/svg" fill="{% if post.is_bookmarked or is_bookmarked %}blue{% else %}none{% endif %} " viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hover:fill-blue-500 ">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-    </svg>
-  </button>
+        <p>{{post.replies.count}}</p>
+      </div>
+     
+  {%else%}
+  <a href="{% url 'posts:detail_post_view' post.id %}">
+    <div class="flex gap-2">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
+  </svg>
+  <p>{{post.replies.count}}</p>
+</div>
+</a>
+  {%endif%}
+  {% include "posts/_repost_button.html" with post=post %}
+
+    {% include "posts/_like_button.html" with post=post %}
+
+    {% include "posts/_bookmark_button.html" with post=post %}
+
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
       <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
     </svg>

@@ -10,17 +10,25 @@ from posts.models import Post
 from posts.views import is_liked,is_bookmarked
 from django.db import transaction, IntegrityError
 from posts.models import Post
+from django.contrib import messages
+from django.template.loader import render_to_string
+
 # Create your views here.
 def create_account_view(request:HttpRequest):
     if request.method=="POST":
         try:
+            if len(request.POST["username"])<3 or len(request.POST["password"])<6:
+                messages.error(request, "Username must be at least 3 characters long and password must be at least 6 characters long.")
+                return render(request, "accounts/signup.html")
+
             user = User.objects.create_user(username=request.POST["username"], email=request.POST["email"], password=request.POST["password"])
             user.save()
             Profile.objects.create(user=user,name=request.POST["name"])
-            
+            messages.success(request, "Your account has been created successfully! Please log in.")
             return redirect("accounts:login_account_view")
 
         except Exception as e:
+            messages.error(request, f"Error creating account: {e}")
             print(e)
 
     return render(request,"accounts/signup.html")
@@ -32,6 +40,8 @@ def login_account_view(request:HttpRequest):
         if user is not None:
             login(request, user)
             return redirect("posts:home_view")
+        else:
+            messages.error(request, "Invalid username or password.") 
 
 
     return render(request,"accounts/login.html")
@@ -70,7 +80,11 @@ def profile_replys_view(request:HttpRequest,username):
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
-    return render(request,"accounts/profile_reply.html",{"posts":posts,"is_following":follow,"matches":matches,"profile_replys_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
+    try:
+        unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
+    except:
+        unread_count=None
+    return render(request,"accounts/profile_reply.html",{"posts":posts,"unread_count":unread_count,"is_following":follow,"matches":matches,"profile_replys_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
 def profile_posts_view(request:HttpRequest,username):
     now = datetime.datetime.now()
     today = now.strftime("%Y-%m-%d")
@@ -103,7 +117,11 @@ def profile_posts_view(request:HttpRequest,username):
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
-    return render(request,"accounts/profile_post.html",{"posts":posts,"matches":matches,"profile_post_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users,"is_following":follow})
+    try:
+        unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
+    except:
+        unread_count=None
+    return render(request,"accounts/profile_post.html",{"posts":posts,"unread_count":unread_count,"matches":matches,"profile_post_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users,"is_following":follow})
 def profile_likes_view(request:HttpRequest,username):
     now = datetime.datetime.now()
     
@@ -136,7 +154,11 @@ def profile_likes_view(request:HttpRequest,username):
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
-    return render(request,"accounts/profile_like.html",{"posts":posts,"is_following":follow,"matches":matches,"profile_likes_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
+    try:
+        unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
+    except:
+        unread_count=None
+    return render(request,"accounts/profile_like.html",{"posts":posts,"unread_count":unread_count,"is_following":follow,"matches":matches,"profile_likes_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
 def edit_profile_view(request:HttpRequest):
     return render(request,"accounts/edit_profile.html")
 def add_delate_follow(request:HttpRequest,username):
@@ -192,7 +214,11 @@ def bookmark_view(request:HttpRequest):
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
-    return render(request,"accounts/bookmark.html",{"matches":matches,"is_bookmarked":True,"days_list":days_list,"selected_date":selected_date,"users":users})
+    try:
+        unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
+    except:
+        unread_count=None
+    return render(request,"accounts/bookmark.html",{"matches":matches,"unread_count":unread_count,"is_bookmarked":True,"days_list":days_list,"selected_date":selected_date,"users":users})
 def notification_view(request:HttpRequest):
     now = datetime.datetime.now()
     today = now.strftime("%Y-%m-%d")
@@ -223,55 +249,63 @@ def notification_view(request:HttpRequest):
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
-    return render(request,"accounts/notification.html",{"matches":matches,"is_noti":True,"notifications":notifications,"days_list":days_list,"selected_date":selected_date,"users":users})
+    try:
+        unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
+    except:
+        unread_count=None
+    return render(request,"accounts/notification.html",{"matches":matches,"unread_count":unread_count,"is_noti":True,"notifications":notifications,"days_list":days_list,"selected_date":selected_date,"users":users})
 
-def add_bookmark(request:HttpRequest,post_id):
-    if request.method=="POST":
-        post=Post.objects.get(pk=post_id)
-        bookmark=Bookmark.objects.filter(user=request.user,post=post).first()
+
+
+def add_bookmark(request: HttpRequest, post_id):
+    if request.method == "POST":
+        post = get_object_or_404(Post, pk=post_id)
+        bookmark = Bookmark.objects.filter(user=request.user, post=post).first()
         if bookmark:
             bookmark.delete()
-            if request.headers.get("HX-Request"):
-                return HttpResponse('''<svg  id="bookmark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hover:fill-blue-500 ">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-        </svg>''')
-            
         else:
-            Bookmark.objects.create(user=request.user,post=post)
-            if request.headers.get("HX-Request"):
-                return HttpResponse('''<svg  id="bookmark" xmlns="http://www.w3.org/2000/svg" fill="blue" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hover:fill-blue-500">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-        </svg>''')
-          
+            Bookmark.objects.create(user=request.user, post=post)
+        
+        is_bookmarked = Bookmark.objects.filter(user=request.user, post=post).exists()
 
-        return redirect('posts:home_view')
+        if request.headers.get("HX-Request"):
+            context = {"post": post, "is_bookmarked": is_bookmarked}
+            html = render_to_string("posts/_bookmark_button.html", context)
+            return HttpResponse(html)
+        
+        return redirect("posts:home_view")
     
-    return redirect('posts:home_view')
+    return redirect("posts:home_view")
 
 def like_view(request:HttpRequest):
     now = datetime.datetime.now()
     today = now.strftime("%Y-%m-%d")
     yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time") 
-    
-    return render(request,"accounts/like.html",{"matches":matches,"is_liked":True})
+    try:
+        unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
+    except:
+        unread_count=None
+    return render(request,"accounts/like.html",{"matches":matches,"is_liked":True,'unread_count':unread_count})
 
 def add_like(request:HttpRequest,post_id):
     if request.method=="POST":
-        post=Post.objects.get(pk=post_id)
+        post=get_object_or_404(Post,pk=post_id)
         like=Like.objects.filter(user=request.user,post=post).first()
         if like:
             like.delete()
-            if request.headers.get("HX-Request"):
-                return HttpResponse('''   <svg  id="like-{{post.id}}"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-        </svg>''')    
+              
         else:
+            print(1)
             Like.objects.create(user=request.user,post=post)
-            if request.headers.get("HX-Request"):
-                return HttpResponse('''   <svg  id="like-{{post.id}}"  xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-        </svg>''')
+        is_liked=Like.objects.filter(user=request.user,post=post).exists()
+        if request.headers.get("HX-Request"):
+            context={"post":post,"is_liked":is_liked}
+            html=render_to_string("posts/_like_button.html",context)
+            return HttpResponse(html)
+
+
+
         return redirect('posts:home_view')
     return redirect('posts:home_view')
 
@@ -284,38 +318,26 @@ def add_repost(request: HttpRequest, post_id):
             target_post = target_post.repost_of
 
         with transaction.atomic():
-            existing_reposts = Post.objects.select_for_update().filter(
+            existing_reposts = Post.objects.filter(
                 user=request.user, repost_of=target_post
             )
             if existing_reposts.exists():
                 existing_reposts.delete()
-                action = "removed"
             else:
                 try:
                     if target_post.game:
                         Post.objects.create(user=request.user, repost_of=target_post, content="",game=target_post.game)
-                        action = "added"
                     else:
                         Post.objects.create(user=request.user, repost_of=target_post, content="")
-                        action = "added"
                 except IntegrityError:
-                    return HttpResponse("Repost failed due to duplicate.", status=400)
+                    pass
+                  
         
         if request.headers.get("HX-Request"):
-            if action == "removed":
-                return HttpResponse('''
-                    <svg id="repost-{{ post_id }}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" 
-                              d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
-                    </svg>
-                ''')
-            else:
-                return HttpResponse('''
-                    <svg id="repost-{{ post_id }}" xmlns="http://www.w3.org/2000/svg" fill="green" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" 
-                              d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
-                    </svg>
-                ''')
+            is_reposted=Post.objects.filter(user=request.user,repost_of=target_post).exists()
+            context={"post":target_post,"is_reposted":is_reposted}
+            html = render_to_string("posts/_repost_button.html", context)
+            return HttpResponse(html)
         return redirect('posts:home_view')
     return redirect('posts:home_view')
 def search_user_view(request:HttpRequest):
@@ -346,8 +368,11 @@ def search_user_view(request:HttpRequest):
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
         
-    
-    return render(request,"accounts/search_user.html",{"users":users,"matches":matches,"days_list":days_list,"selected_date":selected_date,"query":query,"in_search":True})
+    try:
+        unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
+    except:
+        unread_count=None
+    return render(request,"accounts/search_user.html",{"users":users,"unread_count":unread_count,"matches":matches,"days_list":days_list,"selected_date":selected_date,"query":query,"in_search":True})
 def user_following_view(request:HttpRequest,username):
     user=User.objects.get(username=username)
     profile=user.profile
@@ -376,7 +401,11 @@ def user_following_view(request:HttpRequest,username):
     }
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
-    return render(request,"accounts/user_following.html",{"users":users,"profile":profile,"matches":matches,"days_list":days_list,"selected_date":selected_date,"in_follow":True})
+    try:
+        unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
+    except:
+        unread_count=None
+    return render(request,"accounts/user_following.html",{"users":users,"unread_count":unread_count,"profile":profile,"matches":matches,"days_list":days_list,"selected_date":selected_date,"in_follow":True})
 def user_followers_view(request:HttpRequest,username):
     user=User.objects.get(username=username)
     profile=user.profile
@@ -405,7 +434,11 @@ def user_followers_view(request:HttpRequest,username):
     }
         days_list.append(day_dict)
     matches = Match.objects.filter(date=selected_date).order_by("time")
-    return render(request,"accounts/user_following.html",{"users":users,"profile":profile,"matches":matches,"days_list":days_list,"selected_date":selected_date,"in_follow":True})
+    try:
+        unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
+    except:
+        unread_count=None
+    return render(request,"accounts/user_following.html",{"users":users,"unread_count":unread_count,"profile":profile,"matches":matches,"days_list":days_list,"selected_date":selected_date,"in_follow":True})
 
         
         
