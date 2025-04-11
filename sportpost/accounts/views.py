@@ -53,12 +53,14 @@ def profile_replys_view(request:HttpRequest,username):
     
     user=User.objects.get(username=username)
     profile=user.profile
-    follow=Follow.objects.filter(follower=request.user,following__username=username).exists()
 
     posts = Post.objects.filter(user=user, parent_post__isnull=False).order_by("-created_at")
     if request.user.is_authenticated:
         posts=is_bookmarked(posts,request.user)
         posts=is_liked(posts,request.user)
+        follow=Follow.objects.filter(follower=request.user,following__username=username).exists()
+    else:
+        follow=None
     selected_date=request.GET.get("match_date")
     if selected_date:
         try:
@@ -84,18 +86,22 @@ def profile_replys_view(request:HttpRequest,username):
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"accounts/profile_reply.html",{"posts":posts,"unread_count":unread_count,"is_following":follow,"matches":matches,"profile_replys_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
+    return render(request,"accounts/profile_reply.html",{"profile_bold":True,"posts":posts,"unread_count":unread_count,"is_following":follow,"matches":matches,"profile_replys_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
 def profile_posts_view(request:HttpRequest,username):
     now = datetime.datetime.now()
     today = now.strftime("%Y-%m-%d")
     yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     user=User.objects.get(username=username)
     profile=user.profile
-    follow=Follow.objects.filter(follower=request.user,following__username=username).exists()
     posts = Post.objects.filter(user=user, parent_post__isnull=True).order_by("-created_at")
+
     if request.user.is_authenticated:
         posts=is_bookmarked(posts,request.user)
         posts=is_liked(posts,request.user)
+        follow=Follow.objects.filter(follower=request.user,following__username=username).exists()
+    else:
+        follow=None
+
     selected_date=request.GET.get("match_date")
     if selected_date:
         try:
@@ -121,18 +127,20 @@ def profile_posts_view(request:HttpRequest,username):
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"accounts/profile_post.html",{"posts":posts,"unread_count":unread_count,"matches":matches,"profile_post_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users,"is_following":follow})
+    return render(request,"accounts/profile_post.html",{"profile_bold":True,"posts":posts,"unread_count":unread_count,"matches":matches,"profile_post_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users,"is_following":follow})
 def profile_likes_view(request:HttpRequest,username):
     now = datetime.datetime.now()
     
     user=User.objects.get(username=username)
     profile=user.profile
-    follow=Follow.objects.filter(follower=request.user,following__username=username).exists()
 
     posts = Post.objects.filter(like__user=user).order_by("-created_at")
     if request.user.is_authenticated:
         posts=is_bookmarked(posts,request.user)
         posts=is_liked(posts,request.user)
+        follow=Follow.objects.filter(follower=request.user,following__username=username).exists()
+    else:
+        follow=None
     selected_date=request.GET.get("match_date")
     if selected_date:
         try:
@@ -158,7 +166,7 @@ def profile_likes_view(request:HttpRequest,username):
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"accounts/profile_like.html",{"posts":posts,"unread_count":unread_count,"is_following":follow,"matches":matches,"profile_likes_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
+    return render(request,"accounts/profile_like.html",{"profile_bold":True,"posts":posts,"unread_count":unread_count,"is_following":follow,"matches":matches,"profile_likes_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
 def edit_profile_view(request:HttpRequest):
     return render(request,"accounts/edit_profile.html")
 def add_delate_follow(request:HttpRequest,username):
@@ -173,6 +181,7 @@ def add_delate_follow(request:HttpRequest,username):
             follow=Follow.objects.get_or_create(follower=request.user,following=following)
         except:
             pass
+    
     return redirect("accounts:profile_view", username)
 def update_profile(request:HttpRequest):
     if request.method=="POST":
@@ -312,6 +321,7 @@ def add_like(request:HttpRequest,post_id):
 
 
 def add_repost(request: HttpRequest, post_id):
+    
     if request.method == "POST":
         target_post = get_object_or_404(Post, pk=post_id)
         if target_post.repost_of:

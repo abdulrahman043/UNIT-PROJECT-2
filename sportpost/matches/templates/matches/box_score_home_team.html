@@ -1,0 +1,95 @@
+{% extends 'posts/base.html' %}
+{% block title %}
+{{match}} boxScore/SportPost
+{% endblock %}
+{% block content %}
+<div class="flex flex-col gap-0 p-4">
+<div class="flex w-full flex-row gap-3 justify-center items-center ">
+    <div class="flex items-center gap-2">
+        <img
+          class="h-15 w-10 rounded-full object-cover"
+          src="{{ match.home_team.logo.url }}"
+          alt="{{ match.home_team.name }} logo"
+        />
+        <span class="text-lg font-semibold text-white">
+          {{ match.home_team.name }}
+        </span>
+        <span class="text-xl font-bold text-white">
+          {{ match.home_score }}
+        </span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xl font-bold text-white">
+            {{ match.away_score }}
+          </span>
+          <span class="text-lg font-semibold text-white">
+            {{ match.away_team.name }}
+          </span>
+        <img
+          class="h-15 w-10 rounded-full object-cover"
+          src="{{ match.away_team.logo.url }}"
+          alt="{{ match.away_team.name }} logo"
+        />
+   
+       
+      </div>
+      
+    </div>
+    <div>
+    </div>
+    <p class="m-0 p-0">{{match.date|date:"d/m/Y"}}</p>
+  </div>
+  <div class="flex justify-evenly w-full text-gray-600   border border-gray-700">
+    <a class=" w-full border-r border-gray-700 hover:bg-gray-900 p-5" href="{%url 'posts:game_post_view' match.game_id%}">Genreal</a>
+    <a class=" w-full  border-gray-700 border-r hover:bg-gray-900 p-5" href="{%url 'posts:game_post_following_view' match.game_id%}">following</a>
+    <a class="w-full  border-gray-700 text-white  hover:bg-gray-900 p-5" href="{%url 'posts:game_post_following_view' match.game_id%}">Box Score</a>
+
+</div>
+<div class="flex justify-evenly w-full  border border-gray-700">
+    <a class="  font-bold w-full border-r border-gray-700 hover:bg-gray-900 p-5" href="{%url 'matches:box_score_view' match.game_id%}">{{match.home_team.name}}</a>
+    <a class=" w-full  border-gray-700 border-r hover:bg-gray-900 p-5"  href="{%url 'matches:box_score_awayteam_view' match.game_id%}">{{match.away_team.name}}</a>
+
+</div>
+
+
+<div class="relative overflow-x-auto">
+    <table class="w-full text-sm text-left rtl:text-right text-white">
+      <thead class="text-xs text-gray-700 uppercase bg-black">
+        <tr>
+          <th scope="col" class="px-6 py-3">Player</th>
+          <th scope="col" class="px-6 py-3 text-center">Min</th>
+          <th scope="col" class="px-6 py-3 text-center">Ast</th>
+          <th scope="col" class="px-6 py-3 text-center">Reb</th>
+          <th scope="col" class="px-6 py-3 text-center">Stl</th>
+          <th scope="col" class="px-6 py-3 text-center">Pts</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for match in match.box_score.game.homeTeam.players %}
+        <tr class="bg-black border-b border-gray-700">
+          <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-white text-left">
+            {{ match.nameI }}
+          </th>
+          <td class="px-6 py-4 text-center">
+            {{ match.statistics.minutesCalculated|slice:"2:-1" }}
+          </td>
+          <td class="px-6 py-4 text-center">
+            {{ match.statistics.assists }}
+          </td>
+          <td class="px-6 py-4 text-center">
+            {{ match.statistics.reboundsTotal }}
+          </td>
+          <td class="px-6 py-4 text-center">
+            {{ match.statistics.steals }}
+          </td>
+          <td class="px-6 py-4 text-center">
+            {{ match.statistics.points }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+
+{% endblock %}

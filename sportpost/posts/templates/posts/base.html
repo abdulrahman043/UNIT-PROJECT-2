@@ -27,7 +27,7 @@
           <img class="h-5 w-6" src="{%static 'images/logo.svg'%}" alt="">
           <h2 class="hidden [@media(min-width:900px)]:block">SportPost </h2>
         </a>
-        <a class="flex gap-2 " href="{%url 'posts:home_view' %}">
+        <a class="flex gap-2 {% if home_bold %}font-bold{% endif %} " href="{%url 'posts:home_view' %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -35,7 +35,7 @@
           </svg>
           <h2 class="hidden [@media(min-width:900px)]:block">Home </h2>
         </a>
-        <a class="flex gap-2 " href="{%url 'posts:search_view' %}">
+        <a class="flex gap-2 {% if request.resolver_match.url_name == 'search_view' %}font-bold{% endif %} " href="{%url 'posts:search_view' %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -44,7 +44,7 @@
 
           <h2 class="hidden [@media(min-width:900px)]:block">Search</h2>
         </a>
-        <a class="flex gap-2 items-center" href="{%url 'matches:live_score_basketball_view' %}">
+        <a class="flex gap-2 items-center {% if request.resolver_match.url_name == 'live_score_basketball_view' %}font-bold{% endif %}" href="{%url 'matches:live_score_basketball_view' %}">
           <img class="w-6 h-5 " src="{% static 'images/basketball-ball.svg' %}" alt="">
 
           <h2 class="hidden [@media(min-width:900px)]:block">live Score</h2>
@@ -52,7 +52,7 @@
         {% if request.user.is_authenticated %}
         <div class="relative w-full">
          
-        <a class="flex gap-2 " href="{%url 'accounts:notification_view' %}">
+        <a class="flex gap-2 {% if request.resolver_match.url_name == 'notification_view' %}font-bold{% endif %} " href="{%url 'accounts:notification_view' %}">
           
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
@@ -69,7 +69,7 @@
         </a>
         </div>
         
-        <a class="flex gap-2 " href="{%url 'accounts:bookmark_view' %}">
+        <a class="flex gap-2 {% if request.resolver_match.url_name == 'bookmark_view' %}font-bold{% endif %}" href="{%url 'accounts:bookmark_view' %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -80,7 +80,7 @@
         </a>
 
 
-        <a class="flex gap-2 " href="{%url 'accounts:profile_view' request.user.username %}">
+        <a class="flex gap-2 {% if profile_bold %}font-bold{% endif %} " href="{%url 'accounts:profile_view' request.user.username %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round"

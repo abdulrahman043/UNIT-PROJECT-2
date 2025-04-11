@@ -23,13 +23,13 @@ Posts liked by {{profile.name}}({{profile.user.username}})
     <div class="flex text-center justify-between">
         <img class="h-20 w-20 rounded-full object-cover ml-4" src="{{ profile.user.profile.profile_image.url }}"
             alt="{{ profile.user.username }}'s profile image" />
-            {% if request.user == profile.user %}
+            {% if request.user == profile.user    %}
 
         <div class="flex items-center">
             <a href="{% url 'accounts:edit_profile_view' %}" class="bg-black text-white font-bold rounded-xl border-2 border-gray-700  p-2 h-10 hover:bg-gray-900">
                 Edit Profile
               </a>        </div>
-              {%else%}
+              {%elif request.user.is_authenticated %}
               {%if not is_following%}
               <div class="flex items-center">
                 <a  href="{% url 'accounts:add_delate_follow' profile.user.username %}" class="bg-white text-black font-bold rounded-xl border-2 border-gray-700  p-2 h-10 hover:bg-gray-300">
@@ -61,7 +61,7 @@ Posts liked by {{profile.name}}({{profile.user.username}})
     <div class="flex justify-between items-center text-xl px-10 text-gray-400 mt-3 my-3">
         <a href="{%url 'accounts:profile_view' profile.user.username%}">Posts</a>
         <a href="{%url 'accounts:profile_replys_view' profile.user.username%}">Replies</a>
-        <a  class="text-white underline " href="{%url 'accounts:profile_likes_view' profile.user.username%}">Likes</a>
+        <a  class="text-white font-bold  " href="{%url 'accounts:profile_likes_view' profile.user.username%}">Likes</a>
     </div>
 </div>
 <div class="flex flex-col gap-4 w-full">

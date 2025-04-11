@@ -47,7 +47,13 @@ def home_view(request:HttpRequest):
         posts=is_liked(posts,request.user)
         posts=is_reposted(posts,request.user)
 
-    return render(request,"posts/home.html",{"posts":posts,'with_score':True,"unread_count":unread_count,"matches":matches,"days_list":days_list,"selected_date":selected_date,"users":users})
+    if request.user.is_authenticated:
+        user=User.objects.get(username=request.user.username)
+        following = Follow.objects.filter(follower=user).values_list('following', flat=True)
+        following_user=User.objects.filter(id__in=following)
+    else:
+        following_user=None
+    return render(request,"posts/home.html",{"home_bold":True,"posts":posts,'with_score':True,"unread_count":unread_count,"following_user":following_user,"matches":matches,"days_list":days_list,"selected_date":selected_date,"users":users})
 def home_following_view(request:HttpRequest):
     if not request.user.is_authenticated:
         return redirect('accounts:login_account_view')
@@ -83,10 +89,9 @@ def home_following_view(request:HttpRequest):
         posts=is_liked(posts,request.user)
         posts=is_reposted(posts,request.user)
 
-    return render(request,"posts/home_following.html",{"posts":posts,"unread_count":unread_count,'with_score':True,"matches":matches,"days_list":days_list,"selected_date":selected_date,"users":users})
+    return render(request,"posts/home_following.html",{"home_bold":True,"posts":posts,"unread_count":unread_count,'with_score':True,"matches":matches,"days_list":days_list,"selected_date":selected_date,"users":users})
 def add_post(request:HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("accounts:create_account_view")
+    
     game_id=request.GET.get("id")
     if request.method=="POST":
         if "image" in request.FILES:
@@ -267,8 +272,10 @@ def game_post_view(request:HttpRequest,game_id):
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"posts/game_post.html",{"match":match,"unread_count":unread_count,'with_score':True,"posts":posts,"game_post":True,"users":users,"matches":matches,"days_list":days_list,"selected_date":selected_date})
+    return render(request,"posts/game_post.html",{"home_bold":True,"match":match,"unread_count":unread_count,'with_score':True,"posts":posts,"game_post":True,"users":users,"matches":matches,"days_list":days_list,"selected_date":selected_date})
 def game_post_following_view(request:HttpRequest,game_id):
+    if not request.user.is_authenticated:
+        return redirect("accounts:create_account_view") 
     try:
         match = Match.objects.get(game_id=game_id)
     except Match.DoesNotExist:
@@ -304,4 +311,4 @@ def game_post_following_view(request:HttpRequest,game_id):
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"posts/game_post_following.html",{"match":match,"unread_count":unread_count,"posts":posts,"game_post":True,"users":users,"matches":matches,"days_list":days_list,"selected_date":selected_date,'with_score':True})
+    return render(request,"posts/game_post_following.html",{"home_bold":True,"match":match,"unread_count":unread_count,"posts":posts,"game_post":True,"users":users,"matches":matches,"days_list":days_list,"selected_date":selected_date,'with_score':True})
