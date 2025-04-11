@@ -3,25 +3,26 @@
 Users
 {% endblock %}
 {% block content %}
-<form class=" mx-auto border-2  border-gray-700 w-full" action="{%url 'posts:search_view'%}"  method="get">
-    <div class="flex w-full ">
-        <a class="self-center" href="{%url 'posts:home_view'%} "><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            stroke-width="1.5" stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-        </svg>
-    </a>
-      <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-black border border-e-0 border-gray-300 rounded-s-md dark:bg-black dark:text-gray-400 dark:border-gray-600">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-        </svg>
-        
-      </span>
-      
-      <input type="text" name="q" id="search" class="rounded-none rounded-e-lg bg-black border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" value="{{query}}" >
-    </div>
-  </form>
-  <div class="p-4 flex flex-col gap-6">
+<form class=" mx-auto border-2 p-4 border-gray-700 w-full" action="{%url 'posts:search_view'%}" method="get">
+  <div class="flex w-full ">
+    
+    <span
+      class="inline-flex items-center px-3 text-sm text-gray-900 bg-black border border-e-0 border-gray-300 rounded-s-md dark:bg-black dark:text-gray-400 dark:border-gray-600">
+      <button><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+        class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+      </svg> </button>
 
+    </span>
+
+    <input type="text" name="q" id="search"
+      class="rounded-none rounded-e-lg bg-black border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="Search" {%if query %} value="{{query}}"  {%endif%}>
+  </div>
+</form>
+  <div class="p-4 flex flex-col gap-6 min-h-[70vh] ">
+    
   {%for user in users%}
   <a href="{%url 'accounts:profile_view' user.username %}">
       <div class="card flex flex-row gap-4 ">

@@ -47,8 +47,9 @@ def live_score_basketball_view(request:HttpRequest):
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    
-    return render(request, "matches/live_score_basketball.html", {"matches": matches,"unread_count":unread_count,"selected_date":selected_date,'with_score':True,"days_list":days_list,"live_score":True})
+    users=User.objects.order_by("?")[0:3]
+
+    return render(request, "matches/live_score_basketball.html", {"users":users,"matches": matches,"unread_count":unread_count,"selected_date":selected_date,'with_score':True,"days_list":days_list,"live_score":True})
 def score(request:HttpRequest):
     selected_date=request.GET.get("match_date")
     if selected_date:

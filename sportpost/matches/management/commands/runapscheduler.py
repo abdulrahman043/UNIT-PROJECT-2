@@ -44,7 +44,6 @@ def my_job():
       home_score=game.get("homeTeam").get("score")
       away_score=game.get("awayTeam").get("score")
       game_time_utc=game.get("gameTimeUTC")
-      
       game_time_utc_fixed = game_time_utc.replace("Z", "+00:00")
       dt_utc = datetime.fromisoformat(game_time_utc_fixed)
       dt_utc = dt_utc.astimezone(ZoneInfo("Asia/Riyadh"))

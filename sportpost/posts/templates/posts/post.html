@@ -2,20 +2,21 @@
 
     <div class="flex gap-3">
       {% if post.repost_of %}
-      <p>dwq</p>
 
       {% if not profile_view %}
-
-      <!--<a  class="text-sm text-gray-600 hover:underline " href="{%url 'accounts:profile_view' post.user.username %}">{{post.user.username}} Reposted</a>
-    -->
-
+      <div class="flex flex-col gap-2">
+       
+      <a  class="text-sm text-gray-600 hover:underline text-center flex gap-2  " href="{%url 'accounts:profile_view' post.user.username %}"><svg   xmlns="http://www.w3.org/2000/svg" fill="none}" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 ">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
+      </svg>{%if request.user == post.user%} You Reposted {%else%}{{post.user.username}} Reposted{%endif%}</a>
+        <div class="flex gap-3">
       <a href="{%url 'accounts:profile_view' post.repost_of.user.username %}"><img class="h-12 w-12 rounded-full object-cover" src="{{ post.repost_of.user.profile.profile_image.url }}"
           
         alt="{{ post.repost_of.user.username }}'s profile image" /></a>
         <div class="flex flex-col">
           <div class="flex gap-2">
         <a href="{%url 'accounts:profile_view' post.repost_of.user.username %}"><h4>{{post.repost_of.user.profile.name}}</h4></a>
-          <a href="{%url 'accounts:profile_view' post.repost_of.user.username %}"> <h4>@{{post.repost_of.user.username}}</h4></a>
+          <a href="{%url 'accounts:profile_view' post.repost_of.user.username %}"> <h4 class="text-gray-600">@{{post.repost_of.user.username}}</h4></a>
         </div>
         {%if post.repost_of.game %}
         <p class="text-gray-600 text-left">{{post.repost_of.game}}</p>
@@ -23,6 +24,9 @@
         <p class="text-gray-600 text-left">Genreal</p>
 
         {%endif%}
+      </div>
+    </div>
+
           {%if post.repost_of.parent_post %}
           <p class="text-gray-600">Replying to <a class="text-blue-600 hover:underline" href="{%url 'accounts:profile_view' post.repost_of.parent_post.user.username %}"> @{{post.repost_of.parent_post.user.username}} </a></p>
           {%endif%}
@@ -35,7 +39,7 @@
       <div class="flex flex-col">
         <div class="flex gap-2">
       <h4>{{post.repost_of.user.profile.name}}</h4>
-       <h4>@{{post.repost_of.user.username}}</h4>  
+       <h4 class="text-gray-600">@{{post.repost_of.user.username}}</h4>  
       </div>  
 
       </div>
@@ -95,10 +99,10 @@
             <div class="flex flex-col">
               <div class="flex gap-2">
             <a href="{%url 'accounts:profile_view' post.user.username %}"><h4>{{post.user.profile.name}}</h4></a>
-              <a href="{%url 'accounts:profile_view' post.user.username %}"> <h4>@{{post.user.username}}</h4></a>
+              <a href="{%url 'accounts:profile_view' post.user.username %}"> <h4 class="text-gray-600">@{{post.user.username}}</h4></a>
             </div>
             {%if post.game %}
-            <p class="text-gray-600 text-left">{{post.game}}</p>
+            <a href="{%url 'posts:game_post_view' post.game_id %}"><p class="text-gray-600 text-left">{{post.game}}</p></a>
             {%else%}
             <p class="text-gray-600 text-left">Genreal</p>
 
@@ -115,7 +119,7 @@
           <div class="flex flex-col">
             <div class="flex gap-2">
           <h4>{{post.user.profile.name}}</h4>
-           <h4>@{{post.user.username}}</h4>  
+           <h4 class="text-gray-600">@{{post.user.username}}</h4>  
           </div>  
 
           </div>

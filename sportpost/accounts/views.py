@@ -389,7 +389,6 @@ def user_following_view(request:HttpRequest,username):
 
     following = Follow.objects.filter(follower=user).values_list('following', flat=True)
     users=User.objects.filter(id__in=following)
-    
 
     selected_date=request.GET.get("match_date")
     if selected_date:
