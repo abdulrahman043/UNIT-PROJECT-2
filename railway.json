@@ -4,7 +4,7 @@
       "builder": "NIXPACKS"
       },
     "deploy": {
-      "startCommand": "cd sportpst && python mangae.py migrate &&python manage.py collectstatic --noinput &&python manage.py tailwind install &&gunicorn sportpost.wsgi"
+      "startCommand": "cd sportpost && python mangae.py migrate &&python manage.py collectstatic --noinput &&python manage.py tailwind install &&gunicorn sportpost.wsgi"
      
       }
   }
