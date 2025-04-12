@@ -11,6 +11,7 @@ from django_apscheduler import util
 from nba_api.live.nba.endpoints import scoreboard
 from datetime import datetime
 from matches.models import Team,Match
+import requests
 
 from zoneinfo import ZoneInfo
 
@@ -55,26 +56,58 @@ def my_job():
 
       home_team,_=Team.objects.get_or_create(name=home_team_name,team_id=team_id_home,short_name=short_name_home,logo=home_team_logo)
       away_team,_=Team.objects.get_or_create(name=away_team_name,team_id=team_id_away,short_name=short_name_away,logo=away_team_logo)
-      Match.objects.update_or_create(
-        game_id=game_id,
-        defaults={
-          "home_team":home_team,
-          "away_team":away_team,
-          "home_score":home_score,
-          "away_score":away_score,
-          "date":date,
-          "time":time,
-          "game_clock":game_clock,
-          "game_status":game_status,
-          "game_status_text":game_status_text
-
-        }
-      )
-
-
-
-
-
+      match_exsist=Match.objects.filter(game_id=game_id,box_score__isnull=False).exists()
+      if  not match_exsist:
+        try:
+            box_score=requests.get(f"https://cdn.nba.com/static/json/liveData/boxscore/boxscore_{game_id}.json")
+            box_score.raise_for_status()
+            box_score=box_score.json()
+            Match.objects.update_or_create(
+            game_id=game_id,
+            defaults={
+              "home_team":home_team,
+                "away_team":away_team,
+              "home_score":home_score,
+              "away_score":away_score,
+              "date":date,
+              "time":time,
+              "game_clock":game_clock,
+              "game_status":game_status,
+              "game_status_text":game_status_text,
+              "box_score":box_score
+                      }
+                  )
+        except:
+            box_score=None
+            Match.objects.update_or_create(
+            game_id=game_id,
+              defaults={
+              "home_team":home_team,
+                "away_team":away_team,
+                "home_score":home_score,
+                "away_score":away_score,
+                "date":date,
+                "time":time,
+                "game_clock":game_clock,
+                "game_status":game_status,
+                "game_status_text":game_status_text,
+                      }
+                  )
+      else:   
+         Match.objects.update_or_create(
+           game_id=game_id,
+              defaults={
+              "home_team":home_team,
+                "away_team":away_team,
+                "home_score":home_score,
+                "away_score":away_score,
+                "date":date,
+                "time":time,
+                "game_clock":game_clock,
+                "game_status":game_status,
+                "game_status_text":game_status_text,
+                      }
+                  )
   except Exception as e:
     print(e)
 def delete_old_job_executions(max_age=604_800):

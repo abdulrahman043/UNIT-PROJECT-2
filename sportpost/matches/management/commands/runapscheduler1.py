@@ -63,10 +63,11 @@ def my_job():
                 game_status_text=game.get("gameStatusText")
                 home_team,_=Team.objects.get_or_create(name=home_team_name,team_id=team_id_home,short_name=short_name_home,logo=home_team_logo)
                 away_team,_=Team.objects.get_or_create(name=away_team_name,team_id=team_id_away,short_name=short_name_away,logo=away_team_logo)
-                if _:
+                match_exsist=Match.objects.filter(game_id=game_id,box_score__isnull=False).exists()
+                if not match_exsist:
                   try:
                     box_score=requests.get(f"https://cdn.nba.com/static/json/liveData/boxscore/boxscore_{game_id}.json")
-                    box_score.raise_for_status
+                    box_score.raise_for_status()
                     box_score=box_score.json()
                     Match.objects.update_or_create(
                       game_id=game_id,
@@ -86,11 +87,26 @@ def my_job():
 
                       }
                   )
-                    print(1)
                   except:
                     box_score=None
+                    Match.objects.update_or_create(
+                      game_id=game_id,
+                      defaults={
+                      "home_team":home_team,
+                      "away_team":away_team,
+                      "home_score":home_score,
+                      "away_score":away_score,
+                      "date":date,
+                      "time":time,
+                      "game_clock":game_clock,
+                      "game_status":game_status,
+                      "game_status_text":game_status_text,
+
+
+
+                      }
+                  )
                 else:
-                   print(10)
                   
                    Match.objects.update_or_create(
                       game_id=game_id,
@@ -109,6 +125,7 @@ def my_job():
 
                       }
                   )
+                  
               
                 
     except Exception as e:
@@ -135,7 +152,7 @@ class Command(BaseCommand):
 
     scheduler.add_job(
       my_job,
-      trigger=CronTrigger(second="*/59"),  # Every 10 seconds
+      trigger=CronTrigger(minute="*/10"),  # Every 10 seconds
       next_run_time=datetime.now(),         # Run immediately when scheduler starts.
 
       id="my_job",  # The `id` assigned to each job MUST be unique
