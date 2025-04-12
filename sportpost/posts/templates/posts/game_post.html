@@ -40,7 +40,7 @@
       <p class="m-0 p-0">{{match.date|date:"d/m/Y"}}</p>
     </div>
     <div class="flex justify-evenly w-full  border border-gray-700">
-      <a class="  font-bold w-full border-r border-gray-700 hover:bg-gray-900 p-5" href="{%url 'posts:game_post_view' match.game_id%}">Genreal</a>
+      <a class="  font-bold w-full border-r border-gray-700 hover:bg-gray-900 p-5" href="{%url 'posts:game_post_view' match.game_id%}">All</a>
       <a class=" w-full  border-gray-700 border-r hover:bg-gray-900 p-5" href="{%url 'posts:game_post_following_view' match.game_id%}">following</a>
       {%if match.box_score%}
       <a class=" w-full  border-gray-700 hover:bg-gray-900 p-5" href="{%url 'matches:box_score_view' match.game_id%}">Box Score</a>

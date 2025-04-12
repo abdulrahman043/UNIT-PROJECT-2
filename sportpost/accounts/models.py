@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from posts.models import Post
+
 # Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -33,23 +34,13 @@ class Like(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
 
 class Notification(models.Model):
-    receiver = models.ForeignKey(
-        User, 
-        on_delete=models.CASCADE, 
-        related_name="receiver"
-    )
-    sent = models.ForeignKey(
-        User, 
-        on_delete=models.CASCADE, 
-        related_name="sent"
-    )
-    reply = models.ForeignKey(
-        Post, 
-        on_delete=models.CASCADE, 
-        null=True, 
-        blank=True
-    )
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="receiver")
+    sent = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent")
+    reply = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True,related_name="replay_noti")
     created_at = models.DateTimeField(auto_now_add=True)
     is_read=models.BooleanField(default=False)
+    follow = models.ForeignKey(Follow, null=True, blank=True, on_delete=models.CASCADE)
+    like = models.ForeignKey(Like, null=True, blank=True, on_delete=models.CASCADE)
+    repost = models.ForeignKey(Post, null=True, blank=True, on_delete=models.CASCADE)
 
     

@@ -119,8 +119,9 @@ def add_delate_follow(request:HttpRequest,username):
         try:
             following=User.objects.get(username=username)
             follow=Follow.objects.get_or_create(follower=request.user,following=following)
-        except:
-            pass
+        except Exception as e:
+            print(e)
+            
     
     return redirect("accounts:profile_view", username)
 def update_profile(request:HttpRequest):
@@ -233,7 +234,7 @@ def add_repost(request: HttpRequest, post_id):
                         Post.objects.create(user=request.user, repost_of=target_post, content="",game=target_post.game)
                     else:
                         Post.objects.create(user=request.user, repost_of=target_post, content="")
-                except IntegrityError:
+                except :
                     pass
                   
         
