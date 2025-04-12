@@ -27,7 +27,7 @@
           <img class="h-5 w-6" src="{%static 'images/logo.svg'%}" alt="">
           <h2 class="hidden [@media(min-width:900px)]:block">SportPost </h2>
         </a>
-        <a class="flex gap-2 {% if home_bold %}font-bold{% endif %} " href="{%url 'posts:home_view' %}">
+        <a class="flex gap-2 items-center {% if home_bold %}font-bold{% endif %} " href="{%url 'posts:home_view' %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -35,7 +35,7 @@
           </svg>
           <h2 class="hidden [@media(min-width:900px)]:block">Home </h2>
         </a>
-        <a class="flex gap-2 {% if request.resolver_match.url_name == 'search_view' %}font-bold{% endif %} " href="{%url 'posts:search_view' %}">
+        <a class="flex gap-2 items-center {% if request.resolver_match.url_name == 'search_view' %}font-bold{% endif %} " href="{%url 'posts:search_view' %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -52,7 +52,7 @@
         {% if request.user.is_authenticated %}
         <div class="relative w-full">
          
-        <a class="flex gap-2 {% if request.resolver_match.url_name == 'notification_view' %}font-bold{% endif %} " href="{%url 'accounts:notification_view' %}">
+        <a class="flex gap-2 items-center {% if request.resolver_match.url_name == 'notification_view' %}font-bold{% endif %} " href="{%url 'accounts:notification_view' %}">
           
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
@@ -69,7 +69,7 @@
         </a>
         </div>
         
-        <a class="flex gap-2 {% if request.resolver_match.url_name == 'bookmark_view' %}font-bold{% endif %}" href="{%url 'accounts:bookmark_view' %}">
+        <a class="flex gap-2 items-center {% if request.resolver_match.url_name == 'bookmark_view' %}font-bold{% endif %}" href="{%url 'accounts:bookmark_view' %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -80,7 +80,7 @@
         </a>
 
 
-        <a class="flex gap-2 {% if profile_bold %}font-bold{% endif %} " href="{%url 'accounts:profile_view' request.user.username %}">
+        <a class="flex gap-2 items-center {% if profile_bold %}font-bold{% endif %} " href="{%url 'accounts:profile_view' request.user.username %}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -94,16 +94,7 @@
       
         {% if request.user.is_authenticated %}
        
-        <a class="flex gap-2 " href="#">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-
-
-          <h2 class="hidden [@media(min-width:900px)]:block">More </h2>
-        </a>
+      
         <a class="flex gap-2 items-center" href="{%url 'accounts:logout_account' %}">
           <svg xmlns="http://www.w3.org/2000/svg" width="19" height="22" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
@@ -237,7 +228,6 @@
               <div class="flex flex-col text-left">
                 <h4>{{ user.profile.name }}</h4>
                 <h2 class="text-gray-400">@{{ user.username }}</h2>
-                <p>{{ user.profile.bio }}</p>
 
 
               </div>
@@ -256,7 +246,6 @@
               <div class="flex flex-col text-left">
                 <h4>{{ user.profile.name }}</h4>
                 <h2 class="text-gray-400">@{{ user.username }}</h2>
-                <p>{{ user.profile.bio }}</p>
 
 
               </div>

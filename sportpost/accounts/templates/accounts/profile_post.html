@@ -21,7 +21,7 @@ Posts  by {{profile.name}}({{profile.user.username}})
 <div class=" border border-gray-700 flex flex-col ">
     <div class="mx-3 my-3">
     <div class="flex text-center justify-between">
-        <img class="h-20 w-20 rounded-full object-cover ml-4" src="{{ profile.user.profile.profile_image.url }}"
+        <img class="h-20 w-20 rounded-full object-cover ml-2" src="{{ profile.user.profile.profile_image.url }}"
             alt="{{ profile.user.username }}'s profile image" />
             {% if request.user == profile.user   %}
 
@@ -44,7 +44,7 @@ Posts  by {{profile.name}}({{profile.user.username}})
         {% endif %}
     </div>
     <div class="text-left felx flex-col">
-         <h1>{{profile.user.profile.name}}</h1>
+         <h1> {{profile.user.profile.name}}</h1>
          <h1 class="text-gray-600">@{{profile.user.username}}</h1>
          <p {% if posts.0.user.profile.text_direction == "text-right" %} class="text-right w-full whitespace-normal break-words" {% else %} class="text-left w-full whitespace-normal break-words" {% endif %}>{{profile.user.profile.bio}}</p>
             <h1 class="flex gap-2 text-gray-500 mt-3"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">

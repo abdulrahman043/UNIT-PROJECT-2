@@ -4,7 +4,7 @@ Account Followers by {{profile.name}}({{profile.user.username}})
 {% endblock %}
 {% block content %}
 <div>
-    <div class="flex flex-row gap-5 items-center ml-1 p-2 ">
+    <div class="flex flex-row gap-5 items-center p-2  border border-gray-700 ">
         <a href="{%url 'accounts:profile_view' profile.user.username%}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                 stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -18,7 +18,7 @@ Account Followers by {{profile.name}}({{profile.user.username}})
         </div>
     </div>
 </div>
-  <div class="p-4 flex flex-col gap-6">
+  <div class="p-4 flex flex-col gap-6  min-h-[70vh]">
 
   {%for user in users%}
   <a href="{%url 'accounts:profile_view' user.username %}">
@@ -38,7 +38,7 @@ Account Followers by {{profile.name}}({{profile.user.username}})
       </div>
   </a>
   {%empty%}
-<h1>there is no following</h1>
+  <h1>No Followers Yet</h1>
   {%endfor%}
 </div>
 

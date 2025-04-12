@@ -154,33 +154,14 @@ def detail_post_view(request,id):
         replies=is_reposted(replies,request.user)
        
     
-    selected_date=request.GET.get("match_date")
-    if selected_date:
-        try:
-            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
-        except ValueError:
-            selected_date = timezone.now().date()
-    else:
-        selected_date = timezone.now().date()
-
-    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
-    
-    days_list=[]
-    for day in order_matches:
-        day_dict = {
-        "date": day,
-        "is_selected": (day == selected_date),  
-        "day_name": day.strftime("%a")           
-    }
-        days_list.append(day_dict)
-    matches = Match.objects.filter(date=selected_date).order_by("time")
+   
     users=User.objects.order_by("?")[0:3]
     try:
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
     
-    return render(request,"posts/detail_post.html",{"post":post,"unread_count":unread_count,"matches":matches,"detail_view": True,"replies":replies,"days_list":days_list,"selected_date":selected_date,"users":users,"id":str(id)})
+    return render(request,"posts/detail_post.html",{"post":post,"unread_count":unread_count,"detail_view": True,"replies":replies,"users":users,"id":str(id)})
 
 
 

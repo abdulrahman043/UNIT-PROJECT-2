@@ -61,36 +61,15 @@ def profile_replys_view(request:HttpRequest,username):
         follow=Follow.objects.filter(follower=request.user,following__username=username).exists()
     else:
         follow=None
-    selected_date=request.GET.get("match_date")
-    if selected_date:
-        try:
-            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
-        except ValueError:
-            selected_date = timezone.now().date()
-    else:
-        selected_date = timezone.now().date()
-
-    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
     
-    days_list=[]
-    for day in order_matches:
-        day_dict = {
-        "date": day,
-        "is_selected": (day == selected_date),  
-        "day_name": day.strftime("%a")           
-    }
-        days_list.append(day_dict)
-    matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
     try:
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"accounts/profile_reply.html",{"profile_bold":True,"posts":posts,"unread_count":unread_count,"is_following":follow,"matches":matches,"profile_replys_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
+    return render(request,"accounts/profile_reply.html",{"profile_bold":True,"posts":posts,"unread_count":unread_count,"is_following":follow,"profile_replys_view":True,"profile":profile,"users":users})
 def profile_posts_view(request:HttpRequest,username):
-    now = datetime.datetime.now()
-    today = now.strftime("%Y-%m-%d")
-    yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+    
     user=User.objects.get(username=username)
     profile=user.profile
     posts = Post.objects.filter(user=user, parent_post__isnull=True).order_by("-created_at")
@@ -102,34 +81,14 @@ def profile_posts_view(request:HttpRequest,username):
     else:
         follow=None
 
-    selected_date=request.GET.get("match_date")
-    if selected_date:
-        try:
-            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
-        except ValueError:
-            selected_date = timezone.now().date()
-    else:
-        selected_date = timezone.now().date()
-
-    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
-    
-    days_list=[]
-    for day in order_matches:
-        day_dict = {
-        "date": day,
-        "is_selected": (day == selected_date),  
-        "day_name": day.strftime("%a")           
-    }
-        days_list.append(day_dict)
-    matches = Match.objects.filter(date=selected_date).order_by("time")
+  
     users=User.objects.order_by("?")[0:3]
     try:
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"accounts/profile_post.html",{"profile_bold":True,"posts":posts,"unread_count":unread_count,"matches":matches,"profile_post_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users,"is_following":follow})
+    return render(request,"accounts/profile_post.html",{"profile_bold":True,"posts":posts,"unread_count":unread_count,"profile_post_view":True,"profile":profile,"users":users,"is_following":follow})
 def profile_likes_view(request:HttpRequest,username):
-    now = datetime.datetime.now()
     
     user=User.objects.get(username=username)
     profile=user.profile
@@ -141,32 +100,13 @@ def profile_likes_view(request:HttpRequest,username):
         follow=Follow.objects.filter(follower=request.user,following__username=username).exists()
     else:
         follow=None
-    selected_date=request.GET.get("match_date")
-    if selected_date:
-        try:
-            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
-        except ValueError:
-            selected_date = timezone.now().date()
-    else:
-        selected_date = timezone.now().date()
-
-    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
-    
-    days_list=[]
-    for day in order_matches:
-        day_dict = {
-        "date": day,
-        "is_selected": (day == selected_date),  
-        "day_name": day.strftime("%a")           
-    }
-        days_list.append(day_dict)
-    matches = Match.objects.filter(date=selected_date).order_by("time")
+   
     users=User.objects.order_by("?")[0:3]
     try:
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"accounts/profile_like.html",{"profile_bold":True,"posts":posts,"unread_count":unread_count,"is_following":follow,"matches":matches,"profile_likes_view":True,"profile":profile,"days_list":days_list,"selected_date":selected_date,"users":users})
+    return render(request,"accounts/profile_like.html",{"profile_bold":True,"posts":posts,"unread_count":unread_count,"is_following":follow,"profile_likes_view":True,"profile":profile,"users":users})
 def edit_profile_view(request:HttpRequest):
     return render(request,"accounts/edit_profile.html")
 def add_delate_follow(request:HttpRequest,username):
@@ -197,37 +137,13 @@ def update_profile(request:HttpRequest):
 
 
 def bookmark_view(request:HttpRequest):
-    now = datetime.datetime.now()
-    today = now.strftime("%Y-%m-%d")
-    yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
-    matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time") 
-      
-    selected_date=request.GET.get("match_date")
-    if selected_date:
-        try:
-            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
-        except ValueError:
-            selected_date = timezone.now().date()
-    else:
-        selected_date = timezone.now().date()
-
-    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
     
-    days_list=[]
-    for day in order_matches:
-        day_dict = {
-        "date": day,
-        "is_selected": (day == selected_date),  
-        "day_name": day.strftime("%a")           
-    }
-        days_list.append(day_dict)
-    matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
     try:
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"accounts/bookmark.html",{"matches":matches,"unread_count":unread_count,"is_bookmarked":True,"days_list":days_list,"selected_date":selected_date,"users":users})
+    return render(request,"accounts/bookmark.html",{"unread_count":unread_count,"is_bookmarked":True,"users":users})
 def notification_view(request:HttpRequest):
     now = datetime.datetime.now()
     today = now.strftime("%Y-%m-%d")
@@ -237,32 +153,13 @@ def notification_view(request:HttpRequest):
     notifications.filter(is_read=False).update(is_read=True)
     
       
-    selected_date=request.GET.get("match_date")
-    if selected_date:
-        try:
-            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
-        except ValueError:
-            selected_date = timezone.now().date()
-    else:
-        selected_date = timezone.now().date()
-
-    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
-    
-    days_list=[]
-    for day in order_matches:
-        day_dict = {
-        "date": day,
-        "is_selected": (day == selected_date),  
-        "day_name": day.strftime("%a")           
-    }
-        days_list.append(day_dict)
-    matches = Match.objects.filter(date=selected_date).order_by("time")
+   
     users=User.objects.order_by("?")[0:3]
     try:
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"accounts/notification.html",{"matches":matches,"unread_count":unread_count,"is_noti":True,"notifications":notifications,"days_list":days_list,"selected_date":selected_date,"users":users})
+    return render(request,"accounts/notification.html",{"matches":matches,"unread_count":unread_count,"is_noti":True,"notifications":notifications,"users":users})
 
 
 
@@ -287,15 +184,12 @@ def add_bookmark(request: HttpRequest, post_id):
     return redirect("posts:home_view")
 
 def like_view(request:HttpRequest):
-    now = datetime.datetime.now()
-    today = now.strftime("%Y-%m-%d")
-    yesterday = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
-    matches = Match.objects.filter(date__in=[today, yesterday]).order_by("-time") 
+   
     try:
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"accounts/like.html",{"matches":matches,"is_liked":True,'unread_count':unread_count})
+    return render(request,"accounts/like.html",{"is_liked":True,'unread_count':unread_count})
 
 def add_like(request:HttpRequest,post_id):
     if request.method=="POST":
@@ -357,26 +251,8 @@ def search_user_view(request:HttpRequest):
         users=User.objects.filter(username__contains=query)
     else:
         users=User.objects.order_by("?")[0:100]
-    selected_date=request.GET.get("match_date")
-    if selected_date:
-        try:
-            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
-        except ValueError:
-            selected_date = timezone.now().date()
-    else:
-        selected_date = timezone.now().date()
-
-    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
     
-    days_list=[]
-    for day in order_matches:
-        day_dict = {
-        "date": day,
-        "is_selected": (day == selected_date),  
-        "day_name": day.strftime("%a")           
-    }
-        days_list.append(day_dict)
-    matches = Match.objects.filter(date=selected_date).order_by("time")
+   
         
     try:
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
@@ -385,7 +261,7 @@ def search_user_view(request:HttpRequest):
     users_search=User.objects.order_by("?")[0:3]
 
     
-    return render(request,"accounts/search_user.html",{"users_search":users_search,"users":users,"unread_count":unread_count,"matches":matches,"days_list":days_list,"selected_date":selected_date,"query":query,"in_search":True})
+    return render(request,"accounts/search_user.html",{"users_search":users_search,"users":users,"unread_count":unread_count,"query":query,"in_search":True})
 def user_following_view(request:HttpRequest,username):
     user=User.objects.get(username=username)
     profile=user.profile
@@ -393,31 +269,14 @@ def user_following_view(request:HttpRequest,username):
     following = Follow.objects.filter(follower=user).values_list('following', flat=True)
     users=User.objects.filter(id__in=following)
 
-    selected_date=request.GET.get("match_date")
-    if selected_date:
-        try:
-            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
-        except ValueError:
-            selected_date = timezone.now().date()
-    else:
-        selected_date = timezone.now().date()
-
-    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
-    
-    days_list=[]
-    for day in order_matches:
-        day_dict = {
-        "date": day,
-        "is_selected": (day == selected_date),  
-        "day_name": day.strftime("%a")           
-    }
-        days_list.append(day_dict)
-    matches = Match.objects.filter(date=selected_date).order_by("time")
+   
     try:
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"accounts/user_following.html",{"users":users,"unread_count":unread_count,"profile":profile,"matches":matches,"days_list":days_list,"selected_date":selected_date,"in_follow":True})
+    users_search=User.objects.order_by("?")[0:3]
+
+    return render(request,"accounts/following.html",{"users_search":users_search,"users":users,"unread_count":unread_count,"profile":profile,"in_follow":True})
 def user_followers_view(request:HttpRequest,username):
     user=User.objects.get(username=username)
     profile=user.profile
@@ -426,31 +285,13 @@ def user_followers_view(request:HttpRequest,username):
     users=User.objects.filter(id__in=following)
     
 
-    selected_date=request.GET.get("match_date")
-    if selected_date:
-        try:
-            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
-        except ValueError:
-            selected_date = timezone.now().date()
-    else:
-        selected_date = timezone.now().date()
-
-    order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
-    
-    days_list=[]
-    for day in order_matches:
-        day_dict = {
-        "date": day,
-        "is_selected": (day == selected_date),  
-        "day_name": day.strftime("%a")           
-    }
-        days_list.append(day_dict)
-    matches = Match.objects.filter(date=selected_date).order_by("time")
     try:
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"accounts/user_following.html",{"users":users,"unread_count":unread_count,"profile":profile,"matches":matches,"days_list":days_list,"selected_date":selected_date,"in_follow":True})
+    users_search=User.objects.order_by("?")[0:3]
+
+    return render(request,"accounts/followers.html",{"users_search":users_search,"users":users,"unread_count":unread_count,"profile":profile,"in_follow":True})
 
         
         
