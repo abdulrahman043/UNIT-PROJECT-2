@@ -1,4 +1,5 @@
 SportsPost
+
 Overview: SportsPost is a web app for sports fans to track matches, share updates, and interact with each other. Users can follow each other, post comments, and engage through likes, bookmarks, and reposts. It also provides real-time scores and schedules for upcoming or live games.
 Features:
 User Accounts: Sign up, log in, and manage profiles.
