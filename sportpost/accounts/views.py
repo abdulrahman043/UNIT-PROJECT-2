@@ -382,7 +382,10 @@ def search_user_view(request:HttpRequest):
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"accounts/search_user.html",{"users":users,"unread_count":unread_count,"matches":matches,"days_list":days_list,"selected_date":selected_date,"query":query,"in_search":True})
+    users_search=User.objects.order_by("?")[0:3]
+
+    
+    return render(request,"accounts/search_user.html",{"users_search":users_search,"users":users,"unread_count":unread_count,"matches":matches,"days_list":days_list,"selected_date":selected_date,"query":query,"in_search":True})
 def user_following_view(request:HttpRequest,username):
     user=User.objects.get(username=username)
     profile=user.profile

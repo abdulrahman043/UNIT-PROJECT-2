@@ -144,7 +144,7 @@
     </div>
 
     
-    <div class="col-span-11 text-center border border-gray-700  [@media(min-width:900px)]:col-span-7 text-center border border-gray-700">
+    <div class="col-span-11  [@media(min-width:900px)]:col-span-7 text-center border border-gray-700">
      {%if with_score%}
       <div class="flex flex-col  ">
 
@@ -162,7 +162,7 @@
               {%for day in days_list%}
               <button {%if live_score%} hx-get="{% url 'matches:score' %}?match_date={{ day.date|date:'Y-m-d'}}" {%else%}hx-get="{% url 'matches:live_score_view' %}?match_date={{ day.date|date:'Y-m-d'}}"{%endif%}
                 hx-target="#matches" hx-swap="innerHTML"
-                {% if day.is_selected %} autofocus{% endif %}>
+                {% if day.is_selected %} autofocus{% endif %} {% if day.is_selected %} class="font-bold" {%endif%}>
                 <span class="text-white">{{day.date|date:"b"|upper}}</span>
                 <span class="text-white">{{day.date|date:"D"}}</span>
                 <span class="text-white">{{day.date|date:"d"}}</span>
@@ -201,7 +201,8 @@
       
       {% endblock %}
     </div>
-    <div class="hidden  [@media(min-width:900px)]:block col-span-3">
+    <div class="hidden  [@media(min-width:900px)]:block col-span-3  ">
+      <div class=" fixed w-[20%] ">
       {%if not in_search%}
       <form class=" mx-auto " action="{%url 'posts:search_view'%}" method="get">
         <div class="flex ">
@@ -219,10 +220,32 @@
             placeholder="Search">
         </div>
       </form>
-      <div class="border-2  border-gray-700 mt-4">
+      {%endif%}
+
+      <div {%if users_search%} class="border-2  border-gray-700 " {%else%} class="border-2  border-gray-700 mt-4" {%endif%}>
         <div class="px-4 py-3 flex flex-col gap-5 ">
 
           <h3 class="text-left text-m  [@media(min-width:1000px)]:text-3xl ">Who to follow</h3>
+          {%if  users_search %}
+          {%for user in users_search%}
+          <a href="{%url 'accounts:profile_view' user.username %}">
+            <div class="card flex flex-row gap-4 ">
+
+              <div><img class="h-12 w-12 rounded-full object-cover" src="{{ user.profile.profile_image.url }}"
+                  alt="{{ user.username }}'s profile image" />
+              </div>
+              <div class="flex flex-col text-left">
+                <h4>{{ user.profile.name }}</h4>
+                <h2 class="text-gray-400">@{{ user.username }}</h2>
+                <p>{{ user.profile.bio }}</p>
+
+
+              </div>
+
+            </div>
+          </a>
+          {%endfor%}
+          {%else%}          
           {%for user in users%}
           <a href="{%url 'accounts:profile_view' user.username %}">
             <div class="card flex flex-row gap-4 ">
@@ -241,15 +264,28 @@
             </div>
           </a>
           {%endfor%}
+          {%endif%}
+
           <a href="{% url 'accounts:search_user_view' %}" class="text-left text-blue-600">view
             all</a>
         </div>
       </div>
-      {%endif%}
+    </div>
     </div>
   </section>
  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const dayButtons = document.querySelectorAll('#scrollRow button');
   
+      dayButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          dayButtons.forEach(btn => btn.classList.remove('font-bold'));
+          this.classList.add('font-bold');
+        });
+      });
+    });
+  </script>
 </body>
 
 </html>

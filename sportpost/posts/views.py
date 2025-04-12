@@ -197,8 +197,10 @@ def search_view(request:HttpRequest):
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None    
+    users_search=User.objects.order_by("?")[0:3]
 
-    return render(request,"posts/search.html",{"users":users,"unread_count":unread_count,"posts":posts,"query":query,"in_search":True,"users":users})
+
+    return render(request,"posts/search.html",{ "users_search": users_search,"users":users,"unread_count":unread_count,"posts":posts,"query":query,"in_search":True,"users":users})
 
 def is_bookmarked(posts, user):
     try:
