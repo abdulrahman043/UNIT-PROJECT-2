@@ -20,9 +20,9 @@ def home_view(request:HttpRequest):
         try:
             selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
         except ValueError:
-            selected_date = timezone.now().date()
+            selected_date = timezone.now().astimezone().date()
     else:
-        selected_date = timezone.now().date()
+        selected_date = timezone.now().astimezone().date()
 
     order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
     
@@ -41,8 +41,9 @@ def home_view(request:HttpRequest):
     except:
         unread_count=None
 
-    posts=Post.objects.all().order_by('-created_at')
+    posts=Post.objects.filter(parent_post__isnull=True).order_by('-created_at')
     if request.user.is_authenticated:
+        
         posts=is_bookmarked(posts,request.user)
         posts=is_liked(posts,request.user)
         posts=is_reposted(posts,request.user)
@@ -62,9 +63,9 @@ def home_following_view(request:HttpRequest):
         try:
             selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
         except ValueError:
-            selected_date = timezone.now().date()
+            selected_date = timezone.now().astimezone().date()
     else:
-        selected_date = timezone.now().date()
+        selected_date = timezone.now().astimezone().date()
 
     order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
     try:
@@ -145,6 +146,9 @@ def detail_post_view(request,id):
         post = is_liked(post, request.user)
         post = is_reposted(post, request.user)
         post = post.first()
+    else:
+        post = post.first()
+
     replies = post.replies.all()
     
     
@@ -161,7 +165,7 @@ def detail_post_view(request,id):
     except:
         unread_count=None
     
-    return render(request,"posts/detail_post.html",{"post":post,"unread_count":unread_count,"detail_view": True,"replies":replies,"users":users,"id":str(id)})
+    return render(request,"posts/detail_post.html",{"post":post,"unread_count":unread_count,"detail_view": True,"replies":replies,"users":users,"id":post.id})
 
 
 
@@ -207,12 +211,13 @@ def is_liked(posts, user):
             return posts.annotate(is_liked=False)
     except Exception as e:
         print(e)
+
 def is_reposted(posts, user):
     try:
         if user.is_authenticated:
             repost_subquery = Post.objects.filter(
-                user=user,              # Check reposts by the current user
-                repost_of=OuterRef('pk')  # Compare against the original post's primary key
+                user=user,             
+                repost_of=OuterRef('pk')  
             )
             return posts.annotate(is_reposted=Exists(repost_subquery))
         else:
@@ -236,9 +241,9 @@ def game_post_view(request:HttpRequest,game_id):
         try:
             selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
         except ValueError:
-            selected_date = timezone.now().date()
+            selected_date = timezone.now().astimezone().date()
     else:
-        selected_date = timezone.now().date()
+        selected_date = timezone.now().astimezone().date()
 
     order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
     
@@ -258,7 +263,7 @@ def game_post_view(request:HttpRequest,game_id):
     return render(request,"posts/game_post.html",{"home_bold":True,"match":match,"unread_count":unread_count,'with_score':True,"posts":posts,"game_post":True,"users":users,"matches":matches,"days_list":days_list,"selected_date":selected_date})
 def game_post_following_view(request:HttpRequest,game_id):
     if not request.user.is_authenticated:
-        return redirect("accounts:create_account_view") 
+        return redirect("accounts:login_account_view") 
     try:
         match = Match.objects.get(game_id=game_id)
     except Match.DoesNotExist:
@@ -271,9 +276,9 @@ def game_post_following_view(request:HttpRequest,game_id):
         try:
             selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
         except ValueError:
-            selected_date = timezone.now().date()
+            selected_date = timezone.now().astimezone().date()
     else:
-        selected_date = timezone.now().date()
+        selected_date = timezone.now().astimezone().date()
 
     order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
     

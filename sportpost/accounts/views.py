@@ -138,13 +138,15 @@ def update_profile(request:HttpRequest):
 
 
 def bookmark_view(request:HttpRequest):
-    
+    bookmarks = request.user.bookmark_set.all().order_by('-created_at')
+
     users=User.objects.order_by("?")[0:3]
     try:
         unread_count = Notification.objects.filter(receiver=request.user, is_read=False).count()
     except:
         unread_count=None
-    return render(request,"accounts/bookmark.html",{"unread_count":unread_count,"is_bookmarked":True,"users":users})
+
+    return render(request,"accounts/bookmark.html",{"bookmarks":bookmarks,"unread_count":unread_count,"is_bookmarked":True,"users":users})
 def notification_view(request:HttpRequest):
     now = datetime.datetime.now()
     today = now.strftime("%Y-%m-%d")
@@ -167,6 +169,8 @@ def notification_view(request:HttpRequest):
 def add_bookmark(request: HttpRequest, post_id):
     if request.method == "POST":
         post = get_object_or_404(Post, pk=post_id)
+        if post.repost_of:
+            post=post.repost_of
         bookmark = Bookmark.objects.filter(user=request.user, post=post).first()
         if bookmark:
             bookmark.delete()
@@ -195,12 +199,13 @@ def like_view(request:HttpRequest):
 def add_like(request:HttpRequest,post_id):
     if request.method=="POST":
         post=get_object_or_404(Post,pk=post_id)
+        if post.repost_of:
+            post=post.repost_of
         like=Like.objects.filter(user=request.user,post=post).first()
         if like:
             like.delete()
               
         else:
-            print(1)
             Like.objects.create(user=request.user,post=post)
         is_liked=Like.objects.filter(user=request.user,post=post).exists()
         if request.headers.get("HX-Request"):

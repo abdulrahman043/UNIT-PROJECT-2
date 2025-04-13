@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 
 
 ]
+
 try:
     from decouple import config
 
@@ -92,6 +93,7 @@ MIDDLEWARE = [
       "django_browser_reload.middleware.BrowserReloadMiddleware",
 
 ]
+MIDDLEWARE += ('crum.CurrentRequestUserMiddleware',)
 
 ROOT_URLCONF = 'sportpost.urls'
 

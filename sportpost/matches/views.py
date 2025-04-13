@@ -12,11 +12,11 @@ def live_score_view(request:HttpRequest):
         try:
             selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
         except ValueError:
-            selected_date = timezone.now().date()
+            selected_date = timezone.now().astimezone().date()
     else:
-        selected_date = timezone.now().date()
+        selected_date = timezone.now().astimezone().date()
     if not selected_date:
-        selected_date = timezone.now().date()
+        selected_date = timezone.now().astimezone().date()
     matches = Match.objects.filter(date=selected_date).order_by("time")
     
     return render(request, "matches/live_score.html", {"matches": matches,"selected_date":selected_date ,'with_score':True})
@@ -27,11 +27,11 @@ def live_score_basketball_view(request:HttpRequest):
         try:
             selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
         except ValueError:
-            selected_date = timezone.now().date()
+            selected_date = timezone.now().astimezone().date()
     else:
-        selected_date = timezone.now().date()
+        selected_date = timezone.now().astimezone().date()
     if not selected_date:
-        selected_date = timezone.now().date()
+        selected_date = timezone.now().astimezone().date()
     order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
 
     days_list=[]
@@ -56,11 +56,11 @@ def score(request:HttpRequest):
         try:
             selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
         except ValueError:
-            selected_date = timezone.now().date()
+            selected_date = timezone.now().astimezone().date()
     else:
-        selected_date = timezone.now().date()
+        selected_date = timezone.now().astimezone().date()
     if not selected_date:
-        selected_date = timezone.now().date()
+        selected_date = timezone.now().astimezone().date()
     matches = Match.objects.filter(date=selected_date).order_by("time")
     
     return render(request, "matches/score.html", {"matches": matches,"selected_date":selected_date,'with_score':True})
@@ -76,9 +76,9 @@ def box_score_view(request:HttpRequest,game_id):
         try:
             selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
         except ValueError:
-            selected_date = timezone.now().date()
+            selected_date = timezone.now().astimezone().date()
     else:
-        selected_date = timezone.now().date()
+        selected_date = timezone.now().astimezone().date()
 
     order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
     
@@ -109,9 +109,9 @@ def box_score_awayteam_view(request:HttpRequest,game_id):
         try:
             selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
         except ValueError:
-            selected_date = timezone.now().date()
+            selected_date =timezone.now().astimezone().date()
     else:
-        selected_date = timezone.now().date()
+        selected_date =timezone.now().astimezone().date()
 
     order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
     

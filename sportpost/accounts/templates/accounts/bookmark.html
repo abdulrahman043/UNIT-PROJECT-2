@@ -6,7 +6,7 @@ bookmarks
 
 <div class="flex flex-col gap-4 w-full">
   <div class="border border-gray-700 p-5 text-lg"><p>Bookmarks</p></div>
-    {%for bookmark in request.user.bookmark_set.all %}
+    {%for bookmark in bookmarks %}
     <div id="tweet-{{ bookmark.id }}" class="card border-b-2 border-gray-700 p-5 flex gap-5 flex-col ">
       {%with post=bookmark.post%}
       {%include 'posts/post.html'%}

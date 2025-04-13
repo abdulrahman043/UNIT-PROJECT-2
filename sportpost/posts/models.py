@@ -2,6 +2,7 @@ from django.db import models, IntegrityError
 from django.contrib.auth.models import User
 from matches.models import Match
 from django.utils import timezone
+from crum import get_current_request
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
@@ -57,4 +58,19 @@ class Post(models.Model):
         else:
             days = int(seconds / 86400)
             return f"{days}d"
- 
+    @property
+    def is_repost_bookmarked(self):
+        from accounts.models import Bookmark
+        user = get_current_request().user
+        if user.is_authenticated:
+            target = self.repost_of if self.repost_of else self
+            return Bookmark.objects.filter(user=user, post=target).exists()
+        return False
+    @property
+    def is_repost_liked(self):
+        from accounts.models import Like
+        user = get_current_request().user
+        if user.is_authenticated:
+            target = self.repost_of if self.repost_of else self
+            return Like.objects.filter(user=user, post=target).exists()
+        return False
