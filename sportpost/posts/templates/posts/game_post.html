@@ -49,7 +49,7 @@
   </div>
         {% if request.user.is_authenticated %}
     
-    <form class="w-full " method="POST" action="{% url 'posts:add_post' %}?id={{match.game_id}}">
+    <form class="w-full " method="POST" action="{% url 'posts:add_post' %}?id={{match.game_id}}" enctype="multipart/form-data">
         {%csrf_token%}
 
         <div class="w-full mb-4 border border-gray-200 rounded-lg bg-black dark:bg-black dark:border-gray-600 ">

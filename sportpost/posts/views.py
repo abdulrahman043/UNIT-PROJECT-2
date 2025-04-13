@@ -10,6 +10,7 @@ from accounts.models import Bookmark,Like,Follow,Notification
 from django.db.models import Q
 
 from django.db.models import Exists, OuterRef
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # Create your views here.
@@ -41,20 +42,34 @@ def home_view(request:HttpRequest):
     except:
         unread_count=None
 
-    posts=Post.objects.filter(parent_post__isnull=True).order_by('-created_at')
+    posts_qs=Post.objects.filter(parent_post__isnull=True).order_by('-created_at')
     if request.user.is_authenticated:
         
-        posts=is_bookmarked(posts,request.user)
-        posts=is_liked(posts,request.user)
-        posts=is_reposted(posts,request.user)
-
+        posts_qs=is_bookmarked(posts_qs,request.user)
+        posts_qs=is_liked(posts_qs,request.user)
+        posts_qs=is_reposted(posts_qs,request.user)
+    
     if request.user.is_authenticated:
         user=User.objects.get(username=request.user.username)
         following = Follow.objects.filter(follower=user).values_list('following', flat=True)
         following_user=User.objects.filter(id__in=following)
     else:
         following_user=None
-    return render(request,"posts/home.html",{"home_bold":True,"posts":posts,'with_score':True,"unread_count":unread_count,"following_user":following_user,"matches":matches,"days_list":days_list,"selected_date":selected_date,"users":users})
+    paginator = Paginator(posts_qs, 20)
+    page = request.GET.get('page', 1)
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+    context={
+        "home_bold":True,"posts":posts,'with_score':True,"unread_count":unread_count,"following_user":following_user,"matches":matches,"days_list":days_list,"selected_date":selected_date,"users":users
+
+        }
+    if request.headers.get("HX-Request"):
+        return render(request, "posts/posts_list.html", context)
+    return render(request,"posts/home.html",context)
 def home_following_view(request:HttpRequest):
     if not request.user.is_authenticated:
         return redirect('accounts:login_account_view')
@@ -83,14 +98,24 @@ def home_following_view(request:HttpRequest):
     matches = Match.objects.filter(date=selected_date).order_by("time")
     users=User.objects.order_by("?")[0:3]
     following_ids=Follow.objects.filter(follower=request.user).values_list('following__id',flat=True)
-    posts=Post.objects.filter(Q(user__id__in=following_ids)|Q(user__id=request.user.id)).order_by('-created_at')
+    posts_qs=Post.objects.filter(Q(user__id__in=following_ids)|Q(user__id=request.user.id)).order_by('-created_at')
     
     if request.user.is_authenticated:
-        posts=is_bookmarked(posts,request.user)
-        posts=is_liked(posts,request.user)
-        posts=is_reposted(posts,request.user)
-
-    return render(request,"posts/home_following.html",{"home_bold":True,"posts":posts,"unread_count":unread_count,'with_score':True,"matches":matches,"days_list":days_list,"selected_date":selected_date,"users":users})
+        posts_qs=is_bookmarked(posts_qs,request.user)
+        posts_qs=is_liked(posts_qs,request.user)
+        posts_qs=is_reposted(posts_qs,request.user)
+    paginator = Paginator(posts_qs, 20)
+    page = request.GET.get('page', 1)
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+    context={"home_following_view":True,"home_bold":True,"posts":posts,"unread_count":unread_count,'with_score':True,"matches":matches,"days_list":days_list,"selected_date":selected_date,"users":users}
+    if request.headers.get("HX-Request"):
+        return render(request, "posts/posts_list.html", context)
+    return render(request,"posts/home_following.html",context)
 def add_post(request:HttpRequest):
     
     game_id=request.GET.get("id")
@@ -110,6 +135,8 @@ def add_post(request:HttpRequest):
             else:
                 post.save()
             return redirect("posts:home_view")
+        return redirect("posts:home_view")
+
 def add_replay(request:HttpRequest,id:int):
     if not request.user.is_authenticated:
         return redirect("accounts:create_account_view")

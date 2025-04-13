@@ -19,7 +19,7 @@
           <a href="{%url 'accounts:profile_view' post.repost_of.user.username %}"> <h4 class="text-gray-600">@{{post.repost_of.user.username}}</h4></a>
         </div>
         {%if post.repost_of.game %}
-        <p class="text-gray-600 text-left">{{post.repost_of.game}}</p>
+        <a href="{%url 'posts:game_post_view' post.game_id %}"><p class="text-gray-600 text-left">{{post.game}}</p></a>
         {%else%}
         <p class="text-gray-600 text-left">Genreal</p>
 
