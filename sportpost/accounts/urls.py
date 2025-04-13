@@ -6,7 +6,7 @@ urlpatterns = [
         path("login/",views.login_account_view,name="login_account_view"),
         path("logout/",views.logout_account,name="logout_account"),
         path("profile/<username>/post",views.profile_posts_view,name="profile_view"),
-                path("profile/<username>/replys",views.profile_replys_view,name="profile_replys_view"),
+                path("profile/<username>/replies",views.profile_replys_view,name="profile_replys_view"),
                                 path("profile/<username>/likes",views.profile_likes_view,name="profile_likes_view"),
 
 
