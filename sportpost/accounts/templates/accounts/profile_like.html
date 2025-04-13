@@ -21,8 +21,8 @@ Posts liked by {{profile.name}}({{profile.user.username}})
 <div class=" border border-gray-700 flex flex-col ">
     <div class="mx-3 my-3">
     <div class="flex text-center justify-between">
-        <img class="h-20 w-20 rounded-full object-cover ml-2" src="{{ profile.user.profile.profile_image.url }}"
-            alt="{{ profile.user.username }}'s profile image" />
+       <a href="{{ profile.user.profile.profile_image.url }}"><img class="h-20 w-20 rounded-full object-cover ml-2" src="{{ profile.user.profile.profile_image.url }}"
+            alt="{{ profile.user.username }}'s profile image" /></a> 
             {% if request.user == profile.user    %}
 
         <div class="flex items-center">
