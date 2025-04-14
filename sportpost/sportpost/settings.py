@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$f#4g(3)v03ncvjuw)ksb*166x&65vrnfb^2mwsgqu$ojq#5%r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -97,7 +97,7 @@ MIDDLEWARE = [
 
 ]
 MIDDLEWARE += ('crum.CurrentRequestUserMiddleware',)
-if DEBUG:
+if DEBUG and os.environ.get('MY_LOCAL_ENV', 'false') == 'true':
     INSTALLED_APPS += ["django_browser_reload"]
     MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
 ROOT_URLCONF = 'sportpost.urls'
