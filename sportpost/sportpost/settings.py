@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'tailwind',
     'storages',
     'theme',
-    'django_browser_reload',
     "posts",
     "accounts",
     'matches',
@@ -95,11 +94,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-      "django_browser_reload.middleware.BrowserReloadMiddleware",
 
 ]
 MIDDLEWARE += ('crum.CurrentRequestUserMiddleware',)
-
+if DEBUG:
+    INSTALLED_APPS += ["django_browser_reload"]
+    MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
 ROOT_URLCONF = 'sportpost.urls'
 
 TEMPLATES = [
