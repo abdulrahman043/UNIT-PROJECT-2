@@ -239,7 +239,7 @@
           {%for user in users%}
           <a href="{%url 'accounts:profile_view' user.username %}">
             <div class="card flex flex-row gap-4 ">
-
+<p></p>
               <div><img class="h-12 w-12 rounded-full object-cover" src="{{ user.profile.profile_image.url }}"
                   alt="{{ user.username }}'s profile image" />
               </div>
