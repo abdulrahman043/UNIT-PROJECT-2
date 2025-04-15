@@ -34,7 +34,6 @@ def noti_on_like(sender, instance, created, **kwargs):
             sent=like_user,
             like=instance
         )
-           print(1)
     
 @receiver(post_save, sender=Follow)
 def noti_on_Follow(sender, instance, created, **kwargs):

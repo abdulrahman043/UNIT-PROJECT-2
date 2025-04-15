@@ -21,9 +21,9 @@ def home_view(request:HttpRequest):
         try:
             selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
         except ValueError:
-            selected_date = timezone.now().astimezone().date()
+            selected_date = timezone.localtime(timezone.now()).date()
     else:
-        selected_date = timezone.now().astimezone().date()
+        selected_date = timezone.localtime(timezone.now()).date()
 
     order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
     
