@@ -58,6 +58,7 @@ def my_job():
                 dt_utc = dt_utc.astimezone(ZoneInfo("Asia/Riyadh"))
                 date=dt_utc.date()
                 time = dt_utc.time().replace(tzinfo=None)
+                print(time)
                 game_clock=game.get("gameClock")
                 game_status=game.get("gameStatus")
                 game_status_text=game.get("gameStatusText")
