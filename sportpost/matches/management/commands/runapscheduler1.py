@@ -57,7 +57,7 @@ def my_job():
                 dt_utc = datetime.fromisoformat(game_time_utc_fixed)
                 dt_utc = dt_utc.astimezone(ZoneInfo("Asia/Riyadh"))
                 date=dt_utc.date()
-                time=dt_utc.time()
+                time = dt_utc.time().replace(tzinfo=None)
                 game_clock=game.get("gameClock")
                 game_status=game.get("gameStatus")
                 game_status_text=game.get("gameStatusText")
@@ -152,7 +152,7 @@ class Command(BaseCommand):
 
     scheduler.add_job(
       my_job,
-      trigger=CronTrigger(minute="*/59"),  # Every 10 seconds
+      trigger=CronTrigger(minute="*/10"),  # Every 10 seconds
       next_run_time=datetime.now(),         # Run immediately when scheduler starts.
 
       id="my_job",  # The `id` assigned to each job MUST be unique
