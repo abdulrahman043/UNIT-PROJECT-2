@@ -24,7 +24,8 @@ def home_view(request:HttpRequest):
             selected_date = timezone.localtime(timezone.now()).date()
     else:
         selected_date = timezone.localtime(timezone.now()).date()
-
+    print("selected_date:", selected_date)
+    print("Matches dates:", list(Match.objects.order_by('date').values_list('date', flat=True)))
     order_matches=Match.objects.order_by('date').values_list('date',flat=True).distinct()
     
     days_list=[]
