@@ -9,7 +9,7 @@ python manage.py migrate && python manage.py collectstatic --noinput
 
 # Start the worker process in the background
 echo "Starting worker process..."
-python manage.py runapscheduler &
+python manage.py runapscheduler1 &
 worker_pid=$!
 
 # Start the web process (e.g., using Gunicorn) in the background
