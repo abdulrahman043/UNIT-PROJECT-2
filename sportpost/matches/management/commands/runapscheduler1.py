@@ -152,7 +152,7 @@ class Command(BaseCommand):
 
     scheduler.add_job(
       my_job,
-      trigger=CronTrigger(day="*/1"),  # Every 10 seconds
+      trigger=CronTrigger(minute="*/59"),  # Every 10 seconds
       next_run_time=datetime.now(),         # Run immediately when scheduler starts.
 
       id="my_job",  # The `id` assigned to each job MUST be unique
