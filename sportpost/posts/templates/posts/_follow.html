@@ -1,0 +1,11 @@
+<a id="follow" 
+   hx-target="#follow" 
+   hx-swap="outerHTML" 
+   hx-post="{% url 'accounts:add_delate_follow' username %}"
+   onclick="this.closest('button').blur();">
+  {% if status == "unfollow" %}
+    Unfollow @{{ username }}
+  {% else %}
+    Follow @{{ username }}
+  {% endif %}
+</a>
