@@ -27,9 +27,6 @@ Live Match Chat: Discuss ongoing games in real time.
 
 UML:https://lucid.app/lucidchart/0ac3c6b9-a012-4583-8dfa-39ac58b721ae/edit?viewport_loc=-552%2C-554%2C2725%2C1466%2CHWEp-vi-RSFO&invitationId=inv_8ec192c6-c87a-427d-bde4-0d9138577022
 
-User Stories:https://lucid.app/lucidchart/0ac3c6b9-a012-4583-8dfa-39ac58b721ae/edit?viewport_loc=-552%2C-554%2C2725%2C1466%2CHWEp-vi-RSFO&invitationId=inv_8ec192c6-c87a-427d-bde4-0d9138577022
-
-Wireframe:https://www.figma.com/design/pDjfiSLXpfPqaDMPVLTdHG/Wireframing--Copy-?node-id=1059170-69&t=aqe0Olx5CPkU1GkR-1
 
 
 
